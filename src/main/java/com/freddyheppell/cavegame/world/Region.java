@@ -1,13 +1,15 @@
 package com.freddyheppell.cavegame.world;
 
 import com.freddyheppell.cavegame.config.Config;
+import com.freddyheppell.cavegame.storage.ISaveable;
 import com.freddyheppell.cavegame.world.coord.Coordinate;
 import com.freddyheppell.cavegame.world.coord.CoordinateProperties;
+import com.google.gson.Gson;
 
 import java.util.Arrays;
 import java.util.Random;
 
-public class Region {
+public class Region implements ISaveable{
     private Cell[][] cells = new Cell[Config.REGION_SIZE][Config.REGION_SIZE];
     private Random random;
 
@@ -126,5 +128,17 @@ public class Region {
             System.out.print("\n");
         }
         System.out.println("********************************");
+    }
+
+    /**
+     * Get the save data representation of the region
+     *
+     * @return A JSON-string of the
+     */
+    @Override
+    public String getSaveData() {
+        Gson gson = new Gson();
+
+        return gson.toJson(this);
     }
 }
