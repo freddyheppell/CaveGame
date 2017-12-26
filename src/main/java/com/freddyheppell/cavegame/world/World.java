@@ -30,5 +30,7 @@ public class World {
         System.out.println(loadedRegion.getSaveData());
     }
 
+    public void createRegion(Coordinate coordinate) {
+
     }
 }
