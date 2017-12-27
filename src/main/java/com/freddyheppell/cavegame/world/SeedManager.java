@@ -4,7 +4,6 @@ import com.freddyheppell.cavegame.world.coord.Coordinate;
 
 public class SeedManager {
     private String worldSeed;
-    private char regionSeedSeparationChar = '|';
 
 
     public SeedManager(String worldSeed) {
@@ -27,6 +26,7 @@ public class SeedManager {
     }
 
     public long getRegionSeed(Coordinate coordinate) {
+        char regionSeedSeparationChar = '|';
         String regionSeed = worldSeed + regionSeedSeparationChar + coordinate.x + regionSeedSeparationChar + coordinate.y;
 
         return strToLong(regionSeed);

@@ -18,7 +18,6 @@ public class Coordinate {
         return new Coordinate(newX, newY);
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (o == this) return true;

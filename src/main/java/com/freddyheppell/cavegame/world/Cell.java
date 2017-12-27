@@ -9,6 +9,6 @@ public class Cell {
 
 
     public String toString() {
-        return type.toString() + " ";
+        return type.toString() + "  ";
     }
 }
