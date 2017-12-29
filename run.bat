@@ -1,0 +1,1 @@
+gradlew shadowJar && java -jar build/libs/cavegame-1.0-SNAPSHOT-all.jar
