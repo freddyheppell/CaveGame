@@ -39,6 +39,8 @@ repositories {
     mavenCentral()
 }
 
+distZip.enabled = false
+distTar.enabled = false
 
 
 dependencies {
