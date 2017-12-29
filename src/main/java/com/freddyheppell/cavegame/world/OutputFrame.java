@@ -19,6 +19,7 @@ public class OutputFrame {
 //    }
 
     public String toString() {
+        System.out.println();
         Region region = world.region;
         Cell[][] cells = region.getCells();
 
@@ -33,7 +34,7 @@ public class OutputFrame {
             }
 
             if (coordinate.equals(player.getWorldCoordinate())) {
-                outputString.append(EnumCellType.PLAYER + " ");
+                outputString.append(EnumCellType.PLAYER).append("  ");
             } else {
                 outputString.append(cells[coordinate.x][coordinate.y]);
             }
