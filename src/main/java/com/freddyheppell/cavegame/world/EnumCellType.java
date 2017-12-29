@@ -2,9 +2,10 @@ package com.freddyheppell.cavegame.world;
 
 public enum EnumCellType {
     UNSET ("-"),
-    FLOOR ("."),
+    FLOOR (" "),
     ROCK ("#"),
-    WALL ("%");
+    WALL ("%"),
+    PLAYER ("P");
 
     private final String name;
 

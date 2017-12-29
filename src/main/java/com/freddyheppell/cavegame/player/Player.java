@@ -37,10 +37,9 @@ public class Player {
 
         List<Coordinate> validCoords = new ArrayList<>();
 
-        for (int x = leftmostX; x <= rightmostX; x++) {
-            for (int y = bottomostY; y <= topmostY; y++) {
+        for (int y = topmostY; y >= bottomostY; y--) {
+            for (int x = leftmostX; x <= rightmostX; x++) {
                 Coordinate coordinate = new Coordinate(x, y);
-                System.out.println("a" + coordinate);
                 validCoords.add(coordinate);
             }
         }

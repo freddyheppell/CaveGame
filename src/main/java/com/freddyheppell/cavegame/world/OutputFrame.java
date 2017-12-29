@@ -3,6 +3,8 @@ package com.freddyheppell.cavegame.world;
 import com.freddyheppell.cavegame.player.Player;
 import com.freddyheppell.cavegame.world.coord.Coordinate;
 
+import java.util.List;
+
 public class OutputFrame {
     private World world;
     private Player player;
@@ -19,20 +21,24 @@ public class OutputFrame {
     public String toString() {
         Region region = world.region;
         Cell[][] cells = region.getCells();
-        Coordinate playerCoordinates  = player.getWorldCoordinate();
 
         StringBuilder outputString = new StringBuilder();
 
-        for (int x = 0; x < cells.length; x++) {
-            for (int y = 0; y < cells[x].length; y++) {
-                if (x == playerCoordinates.x && y == playerCoordinates.y) {
-                    // The Player is in this cell
-                    outputString.append("P  ");
-                } else {
-                    outputString.append(cells[y][x]);
-                }
+        List<Coordinate> visibleCells = player.visibleCells();
+        int lastY = visibleCells.get(0).y;
+
+        for (Coordinate coordinate : visibleCells) {
+            if (coordinate.y != lastY) {
+                outputString.append("\n");
             }
-            outputString.append("\n");
+
+            if (coordinate.equals(player.getWorldCoordinate())) {
+                outputString.append(EnumCellType.PLAYER + " ");
+            } else {
+                outputString.append(cells[coordinate.x][coordinate.y]);
+            }
+
+            lastY = coordinate.y;
         }
 
         return outputString.toString();

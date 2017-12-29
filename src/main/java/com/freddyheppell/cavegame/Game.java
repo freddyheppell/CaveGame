@@ -18,8 +18,7 @@ public class Game {
     public Game() {
         this.seedManager = new SeedManager(Config.SEED);
         this.world = new World(seedManager);
-        player = new Player(new Coordinate(0, 0));
-        player.visibleCells();
+        player = new Player(new Coordinate(16, 16));
         world.createRegion(new Coordinate(0, 0));
     }
 
