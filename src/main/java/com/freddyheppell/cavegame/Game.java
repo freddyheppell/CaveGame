@@ -4,19 +4,14 @@ import com.freddyheppell.cavegame.config.Config;
 import com.freddyheppell.cavegame.input.EnumKey;
 import com.freddyheppell.cavegame.player.Player;
 import com.freddyheppell.cavegame.utility.ClearScreen;
-import com.freddyheppell.cavegame.utility.ConsoleInput;
+import biz.source_code.utils.RawConsoleInput;
 import com.freddyheppell.cavegame.world.OutputFrame;
 import com.freddyheppell.cavegame.world.SeedManager;
 import com.freddyheppell.cavegame.world.World;
 import com.freddyheppell.cavegame.world.coord.Coordinate;
 import com.freddyheppell.cavegame.world.coord.CoordinateProperties;
-import com.freddyheppell.cavegame.world.coord.Transform;
 
-import java.io.BufferedReader;
-import java.io.Console;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Scanner;
 
 public class Game {
     private World world;
@@ -39,7 +34,7 @@ public class Game {
 
 
         try {
-            int consoleInput = ConsoleInput.read(true);
+            int consoleInput = RawConsoleInput.read(true);
             System.out.println((char)consoleInput);
 
             EnumKey key = EnumKey.valueOf(consoleInput);
