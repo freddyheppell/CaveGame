@@ -11,11 +11,21 @@ public class RegionCoordinate {
         this.ry = ry;
     }
 
+    /** A representation of class data for comparison, HashMap keys etc.
+     *
+     * @return the object's hash
+     */
     @Override
     public int hashCode() {
         return Objects.hash(rx, ry);
     }
 
+    /**
+     * Determine if two coordinates are equal
+     *
+     * @param o The object for comparison
+     * @return If the objects are equal
+     */
     @Override
     public boolean equals(Object o) {
         if (o == this) return true;
@@ -28,6 +38,11 @@ public class RegionCoordinate {
         return rx == regionCoordinate.rx && rx == regionCoordinate.ry;
     }
 
+    /**
+     * Get a string representation of the coordinate
+     *
+     * @return
+     */
     public String toString() {
         return String.format("R: (%d, %d)", rx, ry);
     }

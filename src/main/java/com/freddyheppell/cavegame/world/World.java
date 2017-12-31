@@ -16,6 +16,11 @@ public class World {
 //        this.regionCache = new RegionCache();
     }
 
+    /**
+     * Create a region at the specified coordinates
+     *
+     * @param worldCoordinate The coordinates of the region
+     */
     public void createRegion(WorldCoordinate worldCoordinate) {
         Region region = new Region(seedManager.getRegionSeed(worldCoordinate));
 
@@ -29,6 +34,11 @@ public class World {
     }
 
 
+    /**
+     * Get the JSON representation of the world
+     *
+     * @return
+     */
     public String getSaveData() {
         HashMap<String, Object> saveData = new HashMap<>();
         saveData.put("seed", seedManager);

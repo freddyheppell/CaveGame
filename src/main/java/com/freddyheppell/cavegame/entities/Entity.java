@@ -18,14 +18,29 @@ public class Entity {
         this.worldCoordinate = worldCoordinate;
     }
 
+    /**
+     * Get the current world coordinate of the Entity
+     *
+     * @return The entity's world coordinates
+     */
     public WorldCoordinate getWorldCoordinate() {
         return worldCoordinate;
     }
 
+    /**
+     * Get the cells that are visible to the entity;
+     *
+     * @return A `List` of visible cells
+     */
     public List<WorldCoordinate> visibleCells() {
         return new ArrayList<>();
     }
 
+    /**
+     * Move the entity by a transform
+     *
+     * @param transform the `Transform` to move the entity by
+     */
     public void move(Transform transform) {
         this.worldCoordinate = worldCoordinate.addTransform(transform);
     }

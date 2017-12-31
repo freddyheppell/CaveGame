@@ -40,16 +40,16 @@ public class Game {
 
             switch (key) {
                 case DIR_NORTH:
-                    player.move(CoordinateProperties.NORTH);
+                    player.move(CoordinateProperties.UP);
                     break;
                 case DIR_SOUTH:
-                    player.move(CoordinateProperties.SOUTH);
+                    player.move(CoordinateProperties.DOWN);
                     break;
                 case DIR_EAST:
-                    player.move(CoordinateProperties.EAST);
+                    player.move(CoordinateProperties.LEFT);
                     break;
                 case DIR_WEST:
-                    player.move(CoordinateProperties.WEST);
+                    player.move(CoordinateProperties.RIGHT);
                     break;
                 case QUIT:
                     break;

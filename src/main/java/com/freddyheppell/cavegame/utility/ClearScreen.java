@@ -7,7 +7,8 @@ import java.io.IOException;
 public class ClearScreen {
 
     /**
-     * Is the computer a Windows computer?
+     * If the computer is running Windows
+     * The OS name of all versions of Windows will begin with "Windows"
      */
     private static final boolean isWindows = System.getProperty("os.name").startsWith("Windows");
 

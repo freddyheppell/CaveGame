@@ -10,6 +10,12 @@ public class SeedManager {
         this.worldSeed = worldSeed;
     }
 
+    /**
+     * Encode each value of the string as a long value
+     *
+     * @param string The string to be encoded
+     * @return A long representation
+     */
     private long strToLong(String string) {
         if (string == null) {
             return 0;
@@ -21,10 +27,21 @@ public class SeedManager {
         return hash;
     }
 
+    /**
+     * Get the global seed
+     *
+     * @return
+     */
     public long getWorldSeed() {
         return strToLong(worldSeed);
     }
 
+    /**
+     * Get the region's individual seed
+     *
+     * @param worldCoordinate The coordinates of the region
+     * @return The region's seed
+     */
     public long getRegionSeed(WorldCoordinate worldCoordinate) {
         char regionSeedSeparationChar = '|';
         String regionSeed = worldSeed + regionSeedSeparationChar + worldCoordinate.wx + regionSeedSeparationChar + worldCoordinate.wy;
