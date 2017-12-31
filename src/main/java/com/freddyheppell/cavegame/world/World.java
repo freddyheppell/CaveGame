@@ -1,6 +1,7 @@
 package com.freddyheppell.cavegame.world;
 
 import com.freddyheppell.cavegame.config.Config;
+import com.freddyheppell.cavegame.world.coord.RegionCoordinate;
 import com.freddyheppell.cavegame.world.coord.WorldCoordinate;
 import com.google.gson.Gson;
 
@@ -19,10 +20,10 @@ public class World {
     /**
      * Create a region at the specified coordinates
      *
-     * @param worldCoordinate The coordinates of the region
+     * @param regionCoordinate The coordinates of the region
      */
-    public void createRegion(WorldCoordinate worldCoordinate) {
-        Region region = new Region(seedManager.getRegionSeed(worldCoordinate));
+    public void createRegion(RegionCoordinate regionCoordinate) {
+        Region region = new Region(seedManager.getRegionSeed(regionCoordinate));
 
         region.populateRandomly();
 

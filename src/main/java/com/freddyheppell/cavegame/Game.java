@@ -8,6 +8,7 @@ import biz.source_code.utils.RawConsoleInput;
 import com.freddyheppell.cavegame.world.OutputFrame;
 import com.freddyheppell.cavegame.world.SeedManager;
 import com.freddyheppell.cavegame.world.World;
+import com.freddyheppell.cavegame.world.coord.RegionCoordinate;
 import com.freddyheppell.cavegame.world.coord.WorldCoordinate;
 import com.freddyheppell.cavegame.world.coord.CoordinateProperties;
 
@@ -24,7 +25,7 @@ public class Game {
         this.seedManager = new SeedManager(Config.SEED);
         this.world = new World(seedManager);
         player = new Player(new WorldCoordinate(16, 16));
-        world.createRegion(new WorldCoordinate(0, 0));
+        world.createRegion(new RegionCoordinate(0, 0));
     }
 
     public void gameLoop() {

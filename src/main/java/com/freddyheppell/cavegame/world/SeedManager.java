@@ -1,5 +1,6 @@
 package com.freddyheppell.cavegame.world;
 
+import com.freddyheppell.cavegame.world.coord.RegionCoordinate;
 import com.freddyheppell.cavegame.world.coord.WorldCoordinate;
 
 public class SeedManager {
@@ -39,12 +40,12 @@ public class SeedManager {
     /**
      * Get the region's individual seed
      *
-     * @param worldCoordinate The coordinates of the region
+     * @param regionCoordinate The coordinates of the region
      * @return The region's seed
      */
-    public long getRegionSeed(WorldCoordinate worldCoordinate) {
+    public long getRegionSeed(RegionCoordinate regionCoordinate) {
         char regionSeedSeparationChar = '|';
-        String regionSeed = worldSeed + regionSeedSeparationChar + worldCoordinate.wx + regionSeedSeparationChar + worldCoordinate.wy;
+        String regionSeed = worldSeed + regionSeedSeparationChar + regionCoordinate.rx + regionSeedSeparationChar + regionCoordinate.ry;
 
         return strToLong(regionSeed);
     }
