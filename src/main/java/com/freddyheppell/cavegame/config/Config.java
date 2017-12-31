@@ -10,4 +10,5 @@ public class Config {
     public static final int VIEW_DISTANCE_H = 10;
     public static final int VIEW_DISTANCE_V = 10;
     public static final boolean SHOULD_CLEAR_SCREEN = true;
+    public static final long FRAME_SLEEP_TIME = 3/4;
 }

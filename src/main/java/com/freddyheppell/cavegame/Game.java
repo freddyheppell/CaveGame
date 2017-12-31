@@ -61,6 +61,10 @@ public class Game {
             e.printStackTrace();
         }
 
-
+        try {
+            TimeUnit.SECONDS.sleep(Config.FRAME_SLEEP_TIME);
+        } catch (InterruptedException e) {
+            throw new RuntimeException("Interrupted during frame sleep");
+        }
     }
 }
