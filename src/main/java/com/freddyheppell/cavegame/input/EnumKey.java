@@ -4,10 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum EnumKey {
-    DIR_NORTH ('n'),
+    DIR_NORTH ('w'),
     DIR_SOUTH ('s'),
-    DIR_EAST ('e'),
-    DIR_WEST ('w'),
+    DIR_EAST ('d'),
+    DIR_WEST ('a'),
     QUIT ('q');
 
     private final int charInt;
@@ -20,10 +20,9 @@ public enum EnumKey {
         }
     }
 
-    private EnumKey(final char key) { charInt = (int)key; }
+    EnumKey(final char key) { charInt = (int)key; }
 
     public static EnumKey valueOf(int key) {
-        System.out.println("Requesting" + (char)key);
         return map.get(key);
     }
 }
