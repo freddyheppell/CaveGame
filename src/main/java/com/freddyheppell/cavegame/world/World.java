@@ -1,7 +1,7 @@
 package com.freddyheppell.cavegame.world;
 
 import com.freddyheppell.cavegame.config.Config;
-import com.freddyheppell.cavegame.world.coord.Coordinate;
+import com.freddyheppell.cavegame.world.coord.WorldCoordinate;
 import com.google.gson.Gson;
 
 import java.util.HashMap;
@@ -16,8 +16,8 @@ public class World {
 //        this.regionCache = new RegionCache();
     }
 
-    public void createRegion(Coordinate coordinate) {
-        Region region = new Region(seedManager.getRegionSeed(coordinate));
+    public void createRegion(WorldCoordinate worldCoordinate) {
+        Region region = new Region(seedManager.getRegionSeed(worldCoordinate));
 
         region.populateRandomly();
 

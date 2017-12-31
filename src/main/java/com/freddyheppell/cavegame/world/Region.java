@@ -1,7 +1,7 @@
 package com.freddyheppell.cavegame.world;
 
 import com.freddyheppell.cavegame.config.Config;
-import com.freddyheppell.cavegame.world.coord.Coordinate;
+import com.freddyheppell.cavegame.world.coord.WorldCoordinate;
 import com.freddyheppell.cavegame.world.coord.CoordinateProperties;
 
 import java.util.Arrays;
@@ -38,18 +38,18 @@ public class Region {
     /**
      * Get a cell if it exists, or return rock if it does not
      *
-     * @param coordinate The coordinate pair to get
+     * @param worldCoordinate The worldCoordinate pair to get
      * @return The Cell at those coordinates
      */
-    private Cell getCellIfExists(Coordinate coordinate) {
-        if (coordinate.x > Config.REGION_SIZE - 1 ||
-                coordinate.y > Config.REGION_SIZE - 1 ||
-                coordinate.x < 0 ||
-                coordinate.y < 0) {
+    private Cell getCellIfExists(WorldCoordinate worldCoordinate) {
+        if (worldCoordinate.wx > Config.REGION_SIZE - 1 ||
+                worldCoordinate.wy > Config.REGION_SIZE - 1 ||
+                worldCoordinate.wx < 0 ||
+                worldCoordinate.wy < 0) {
             return new Cell(EnumCellType.ROCK);
         }
 
-        return cells[coordinate.x][coordinate.y];
+        return cells[worldCoordinate.wx][worldCoordinate.wy];
     }
 
     /**
@@ -58,12 +58,12 @@ public class Region {
      * @param center The coordinate of the home cell
      * @return A list of cells in the Moore neighbourhood
      */
-    private Cell[] getMooreNeighbourhood(Coordinate center) {
+    private Cell[] getMooreNeighbourhood(WorldCoordinate center) {
         Cell[] neighbours = new Cell[8];
 
         for (int i = 0; i < 8; i++) {
-            Coordinate coordinate = center.addTransform(CoordinateProperties.adjacentTransforms[i]);
-            neighbours[i] = getCellIfExists(coordinate);
+            WorldCoordinate worldCoordinate = center.addTransform(CoordinateProperties.adjacentTransforms[i]);
+            neighbours[i] = getCellIfExists(worldCoordinate);
         }
 
         return neighbours;
@@ -98,7 +98,7 @@ public class Region {
             Arrays.fill(nextCells[x], new Cell(EnumCellType.UNSET));
 
             for (int y = 0; y < cells[x].length; y++) {
-                Cell[] neighbours = getMooreNeighbourhood(new Coordinate(x, y));
+                Cell[] neighbours = getMooreNeighbourhood(new WorldCoordinate(x, y));
                 int count = countMatchingCells(neighbours, EnumCellType.ROCK);
 
                 if (count >= Config.CELL_DEATH_THRESHOLD) {

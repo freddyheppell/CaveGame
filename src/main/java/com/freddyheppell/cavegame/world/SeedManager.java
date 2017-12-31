@@ -1,6 +1,6 @@
 package com.freddyheppell.cavegame.world;
 
-import com.freddyheppell.cavegame.world.coord.Coordinate;
+import com.freddyheppell.cavegame.world.coord.WorldCoordinate;
 
 public class SeedManager {
     private String worldSeed;
@@ -25,9 +25,9 @@ public class SeedManager {
         return strToLong(worldSeed);
     }
 
-    public long getRegionSeed(Coordinate coordinate) {
+    public long getRegionSeed(WorldCoordinate worldCoordinate) {
         char regionSeedSeparationChar = '|';
-        String regionSeed = worldSeed + regionSeedSeparationChar + coordinate.x + regionSeedSeparationChar + coordinate.y;
+        String regionSeed = worldSeed + regionSeedSeparationChar + worldCoordinate.wx + regionSeedSeparationChar + worldCoordinate.wy;
 
         return strToLong(regionSeed);
     }

@@ -1,7 +1,7 @@
 package com.freddyheppell.cavegame.world;
 
-import com.freddyheppell.cavegame.player.Player;
-import com.freddyheppell.cavegame.world.coord.Coordinate;
+import com.freddyheppell.cavegame.entities.Player;
+import com.freddyheppell.cavegame.world.coord.WorldCoordinate;
 
 import java.util.List;
 
@@ -25,21 +25,22 @@ public class OutputFrame {
 
         StringBuilder outputString = new StringBuilder();
 
-        List<Coordinate> visibleCells = player.visibleCells();
-        int lastY = visibleCells.get(0).y;
+        List<WorldCoordinate> visibleCells = player.visibleCells();
+        int lastY = visibleCells.get(0).wy;
 
-        for (Coordinate coordinate : visibleCells) {
-            if (coordinate.y != lastY) {
+        for (WorldCoordinate worldCoordinate : visibleCells) {
+            if (worldCoordinate.wy != lastY) {
                 outputString.append("\n");
             }
 
-            if (coordinate.equals(player.getWorldCoordinate())) {
+            if (worldCoordinate.equals(player.getWorldCoordinate())) {
                 outputString.append(EnumCellType.PLAYER).append("  ");
             } else {
-                outputString.append(cells[coordinate.x][coordinate.y]);
+//                outputString.append(worldCoordinate);
+                outputString.append(cells[worldCoordinate.cx][worldCoordinate.cy]);
             }
 
-            lastY = coordinate.y;
+            lastY = worldCoordinate.wy;
         }
 
         return outputString.toString();
