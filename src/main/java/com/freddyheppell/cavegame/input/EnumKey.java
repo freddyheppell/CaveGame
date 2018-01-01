@@ -5,13 +5,13 @@ import java.util.Map;
 
 public enum EnumKey {
     // MOVEMENT
-    DIR_NORTH ('w'),
-    DIR_SOUTH ('s'),
-    DIR_EAST ('d'),
-    DIR_WEST ('a'),
+    DIR_NORTH('w'),
+    DIR_SOUTH('s'),
+    DIR_EAST('d'),
+    DIR_WEST('a'),
 
     // MISC
-    QUIT ('q');
+    QUIT('q');
 
     /**
      * The integer representation of the character
@@ -32,15 +32,21 @@ public enum EnumKey {
     /**
      * @param key The key associated with the command
      */
-    EnumKey(final char key) { charInt = (int)key; }
+    EnumKey(final char key) {
+        this.charInt = (int) key;
+    }
 
     /**
-     * Get the command associated twith the key
+     * Get the command associated with the key
      *
      * @param key The integer value of the key to lookup
      * @return The corresponding command
      */
     public static EnumKey valueOf(int key) {
-        return map.get(key);
+        if (map.containsKey(key)) {
+            return map.get(key);
+        }
+
+        throw new RuntimeException("Key not found!");
     }
 }

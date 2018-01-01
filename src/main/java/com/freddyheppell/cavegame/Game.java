@@ -24,8 +24,8 @@ public class Game {
 //        System.out.println("Hello there");
         this.seedManager = new SeedManager(Config.SEED);
         this.world = new World(seedManager);
-        player = new Player(new WorldCoordinate(16, 16));
         world.createRegion(new RegionCoordinate(0, 0));
+        player = new Player(new WorldCoordinate(16, 16));
     }
 
     public void gameLoop() {
@@ -41,16 +41,16 @@ public class Game {
 
             switch (key) {
                 case DIR_NORTH:
-                    player.move(CoordinateProperties.UP);
+                    player.move(CoordinateProperties.UP, world);
                     break;
                 case DIR_SOUTH:
-                    player.move(CoordinateProperties.DOWN);
+                    player.move(CoordinateProperties.DOWN, world);
                     break;
                 case DIR_EAST:
-                    player.move(CoordinateProperties.LEFT);
+                    player.move(CoordinateProperties.LEFT, world);
                     break;
                 case DIR_WEST:
-                    player.move(CoordinateProperties.RIGHT);
+                    player.move(CoordinateProperties.RIGHT, world);
                     break;
                 case QUIT:
                     break;
