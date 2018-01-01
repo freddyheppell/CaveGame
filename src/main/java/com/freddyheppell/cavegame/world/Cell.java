@@ -11,4 +11,12 @@ public class Cell {
     public String toString() {
         return type.toString() + "  ";
     }
+
+    public boolean isBlocking() {
+        return this.type.isBlocking();
+    }
+
+    public boolean isNonBlocking() {
+        return !isBlocking();
+    }
 }
