@@ -41,7 +41,7 @@ public class Region {
      * @param worldCoordinate The worldCoordinate pair to get
      * @return The Cell at those coordinates
      */
-    private Cell getCellIfExists(WorldCoordinate worldCoordinate) {
+    public Cell getCellIfExists(WorldCoordinate worldCoordinate) {
         if (worldCoordinate.wx > Config.REGION_SIZE - 1 ||
                 worldCoordinate.wy > Config.REGION_SIZE - 1 ||
                 worldCoordinate.wx < 0 ||

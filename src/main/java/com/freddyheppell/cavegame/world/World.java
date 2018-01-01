@@ -34,6 +34,24 @@ public class World {
         this.region = region;
     }
 
+    public Region getRegion(RegionCoordinate regionCoordinate) {
+        return region;
+    }
+
+    public Cell getCell(WorldCoordinate worldCoordinate) {
+        Region region = getRegion(worldCoordinate.getRegionCoordinate());
+        return region.getCellIfExists(worldCoordinate);
+    }
+
+    public WorldCoordinate getEmptyCellNear(WorldCoordinate worldCoordinate) {
+        // First, check if the supplied cell is empty
+        if (getCell(worldCoordinate).isNonBlocking()) {
+            return worldCoordinate;
+        }
+
+        return;
+    }
+
 
     /**
      * Get the JSON representation of the world
