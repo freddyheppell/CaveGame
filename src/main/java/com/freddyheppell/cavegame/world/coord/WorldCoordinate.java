@@ -18,14 +18,18 @@ public class WorldCoordinate {
         this.wy = wy;
 
         // Find the region that (wx, wy) is in
-        this.rx = Math.abs(wx / Config.REGION_SIZE);
-        this.ry = Math.abs(wy / Config.REGION_SIZE);
+        // floorDiv divides, finds the floor and casts to an integer
+        this.rx = Math.floorDiv(wx, Config.REGION_SIZE);
+        this.ry = Math.floorDiv(wy, Config.REGION_SIZE);
 
         // Find the coordinates within that region
-        // As all values are integers, integer division will be used, which is
-        // the same as using the DIV operator
-        this.cx = Math.abs(wx % Config.REGION_SIZE);
-        this.cy = Math.abs(wy % Config.REGION_SIZE);
+        // floorMod is required for negative coordinates to work
+        this.cx = Math.floorMod(wx, Config.REGION_SIZE);
+        this.cy = Math.floorMod(wy, Config.REGION_SIZE);
+    }
+
+    public static WorldCoordinate origin() {
+        return new WorldCoordinate(0,0);
     }
 
     /**
@@ -68,7 +72,8 @@ public class WorldCoordinate {
         return new RegionCoordinate(rx, ry);
     }
 
-    /** A representation of class data for comparison, HashMap keys etc.
+    /**
+     * A representation of class data for comparison, HashMap keys etc.
      *
      * @return the object's hash
      */
