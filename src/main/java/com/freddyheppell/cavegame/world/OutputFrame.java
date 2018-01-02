@@ -1,6 +1,7 @@
 package com.freddyheppell.cavegame.world;
 
 import com.freddyheppell.cavegame.entities.Player;
+import com.freddyheppell.cavegame.world.cells.Cell;
 import com.freddyheppell.cavegame.world.coord.WorldCoordinate;
 
 import java.util.List;

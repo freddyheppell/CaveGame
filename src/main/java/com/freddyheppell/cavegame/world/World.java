@@ -1,6 +1,7 @@
 package com.freddyheppell.cavegame.world;
 
 import com.freddyheppell.cavegame.config.Config;
+import com.freddyheppell.cavegame.world.cells.Cell;
 import com.freddyheppell.cavegame.world.coord.RegionCoordinate;
 import com.freddyheppell.cavegame.world.coord.WorldCoordinate;
 import com.google.gson.Gson;
@@ -49,7 +50,7 @@ public class World {
             return worldCoordinate;
         }
 
-        return;
+        return WorldCoordinate.origin();
     }
 
 

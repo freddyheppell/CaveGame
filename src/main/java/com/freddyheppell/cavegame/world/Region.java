@@ -1,6 +1,7 @@
 package com.freddyheppell.cavegame.world;
 
 import com.freddyheppell.cavegame.config.Config;
+import com.freddyheppell.cavegame.world.cells.Cell;
 import com.freddyheppell.cavegame.world.coord.WorldCoordinate;
 import com.freddyheppell.cavegame.world.coord.CoordinateProperties;
 

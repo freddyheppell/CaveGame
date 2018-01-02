@@ -1,5 +1,6 @@
 package com.freddyheppell.cavegame.entities;
 
+import com.freddyheppell.cavegame.world.World;
 import com.freddyheppell.cavegame.world.coord.Transform;
 import com.freddyheppell.cavegame.world.coord.WorldCoordinate;
 
@@ -41,7 +42,15 @@ public class Entity {
      *
      * @param transform the `Transform` to move the entity by
      */
-    public void move(Transform transform) {
-        this.worldCoordinate = worldCoordinate.addTransform(transform);
+    public void move(Transform transform, World world) {
+        WorldCoordinate newCoordinate = worldCoordinate.addTransform(transform);
+
+        if (world.getCell(newCoordinate).type.isBlocking()) {
+            // If the move is not valid, do not perform it
+            return;
+        } else {
+            // If it is valid, change the player's coordinates
+            worldCoordinate = newCoordinate;
+        }
     }
 }
