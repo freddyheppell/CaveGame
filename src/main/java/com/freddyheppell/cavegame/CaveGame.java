@@ -1,9 +1,5 @@
 package com.freddyheppell.cavegame;
 
-import com.freddyheppell.cavegame.world.SeedManager;
-import com.freddyheppell.cavegame.world.World;
-
-import java.util.Scanner;
 
 public class CaveGame {
 

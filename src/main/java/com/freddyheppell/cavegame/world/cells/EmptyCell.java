@@ -1,25 +1,23 @@
 package com.freddyheppell.cavegame.world.cells;
 
-public class FloorCell extends Cell {
-    private char character = ' ';
-
+public class EmptyCell extends Cell {
     @Override
-    public boolean isBlocking() {
-        return false;
+    public String toString() {
+        return "X" + "  ";
     }
 
     @Override
-    public boolean isSpawnAllowed() {
+    public boolean isBlocking() {
         return true;
     }
 
     @Override
-    public void onEnter() {
+    public boolean isSpawnAllowed() {
+        return false;
     }
 
     @Override
-    public String toString() {
-        return character + "  ";
-    }
+    public void onEnter() {
 
+    }
 }

@@ -1,5 +1,6 @@
 package com.freddyheppell.cavegame.world;
 
+import com.freddyheppell.cavegame.config.Config;
 import com.freddyheppell.cavegame.entities.Player;
 import com.freddyheppell.cavegame.world.cells.Cell;
 import com.freddyheppell.cavegame.world.coord.WorldCoordinate;
@@ -21,8 +22,6 @@ public class OutputFrame {
 
     public String toString() {
         System.out.println();
-        Region region = world.region;
-        Cell[][] cells = region.getCells();
 
         StringBuilder outputString = new StringBuilder();
 
@@ -35,10 +34,10 @@ public class OutputFrame {
             }
 
             if (worldCoordinate.equals(player.getWorldCoordinate())) {
-                outputString.append(EnumCellType.PLAYER).append("  ");
+                outputString.append(Config.PLAYER_INDICATOR).append("  ");
             } else {
 //                outputString.append(worldCoordinate);
-                outputString.append(cells[worldCoordinate.cx][worldCoordinate.cy]);
+                outputString.append(world.getCell(worldCoordinate));
             }
 
             lastY = worldCoordinate.wy;

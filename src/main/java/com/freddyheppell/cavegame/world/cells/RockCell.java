@@ -1,7 +1,26 @@
 package com.freddyheppell.cavegame.world.cells;
 
-public class RockCell {
-    private final char character = '#';
-    public final boolean isBlocking = true;
-    public final boolean allowSpawn = false;
+public class RockCell extends Cell {
+    private char character = '#';
+
+    @Override
+    public String toString() {
+        return character + "  ";
+    }
+
+    @Override
+    public boolean isBlocking() {
+        return true;
+    }
+
+    @Override
+    public boolean isSpawnAllowed() {
+        return false;
+    }
+
+    @Override
+    public void onEnter() {
+
+    }
+
 }

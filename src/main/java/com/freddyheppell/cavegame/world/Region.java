@@ -2,6 +2,9 @@ package com.freddyheppell.cavegame.world;
 
 import com.freddyheppell.cavegame.config.Config;
 import com.freddyheppell.cavegame.world.cells.Cell;
+import com.freddyheppell.cavegame.world.cells.EmptyCell;
+import com.freddyheppell.cavegame.world.cells.FloorCell;
+import com.freddyheppell.cavegame.world.cells.RockCell;
 import com.freddyheppell.cavegame.world.coord.WorldCoordinate;
 import com.freddyheppell.cavegame.world.coord.CoordinateProperties;
 
@@ -28,9 +31,9 @@ public class Region {
                 float randomValue = random.nextFloat();
 
                 if (randomValue < Config.RANDOM_BOUNDARY) {
-                    cells[x][y] = new Cell(EnumCellType.FLOOR);
+                    cells[x][y] = new FloorCell();
                 } else {
-                    cells[x][y] = new Cell(EnumCellType.ROCK);
+                    cells[x][y] = new RockCell();
                 }
             }
         }
@@ -43,14 +46,14 @@ public class Region {
      * @return The Cell at those coordinates
      */
     public Cell getCellIfExists(WorldCoordinate worldCoordinate) {
-        if (worldCoordinate.wx > Config.REGION_SIZE - 1 ||
-                worldCoordinate.wy > Config.REGION_SIZE - 1 ||
-                worldCoordinate.wx < 0 ||
-                worldCoordinate.wy < 0) {
-            return new Cell(EnumCellType.ROCK);
+        if (worldCoordinate.cx > Config.REGION_SIZE - 1 ||
+                worldCoordinate.cy > Config.REGION_SIZE - 1 ||
+                worldCoordinate.cx < 0 ||
+                worldCoordinate.cy < 0) {
+            return new EmptyCell();
         }
 
-        return cells[worldCoordinate.wx][worldCoordinate.wy];
+        return cells[worldCoordinate.cx][worldCoordinate.cy];
     }
 
     /**
@@ -77,10 +80,10 @@ public class Region {
      * @param type  The type to check
      * @return The number of matching cells
      */
-    private int countMatchingCells(Cell[] cells, EnumCellType type) {
+    private int countMatchingCells(Cell[] cells, Class<?> type) {
         int count = 0;
         for (Cell cell : cells) {
-            if (cell.type == type) {
+            if (cell.getClass() == type) {
                 count++;
             }
         }
@@ -96,18 +99,18 @@ public class Region {
         Cell[][] nextCells = new Cell[Config.REGION_SIZE][Config.REGION_SIZE];
 
         for (int x = 0; x < cells.length; x++) {
-            Arrays.fill(nextCells[x], new Cell(EnumCellType.UNSET));
+            Arrays.fill(nextCells[x], new EmptyCell());
 
             for (int y = 0; y < cells[x].length; y++) {
                 Cell[] neighbours = getMooreNeighbourhood(new WorldCoordinate(x, y));
-                int count = countMatchingCells(neighbours, EnumCellType.ROCK);
+                int count = countMatchingCells(neighbours, RockCell.class);
 
                 if (count >= Config.CELL_DEATH_THRESHOLD) {
                     // If the count is higher than the threshold, the cell will become rock
-                    nextCells[x][y] = new Cell(EnumCellType.ROCK);
+                    nextCells[x][y] = new RockCell();
                 } else {
                     // but if it is lower, it will become floor
-                    nextCells[x][y] = new Cell(EnumCellType.FLOOR);
+                    nextCells[x][y] = new FloorCell();
                 }
             }
         }

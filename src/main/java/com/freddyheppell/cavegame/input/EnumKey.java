@@ -24,8 +24,10 @@ public enum EnumKey {
     private static Map<Integer, EnumKey> map = new HashMap<>();
 
     static {
-        for (EnumKey legEnum : EnumKey.values()) {
-            map.put(legEnum.charInt, legEnum);
+        for (EnumKey entry : EnumKey.values()) {
+            System.out.println("Listing chars");
+            System.out.println(entry.charInt);
+            map.put(entry.charInt, entry);
         }
     }
 

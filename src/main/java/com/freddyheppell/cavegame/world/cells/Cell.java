@@ -1,17 +1,13 @@
 package com.freddyheppell.cavegame.world.cells;
 
-import com.freddyheppell.cavegame.world.EnumCellType;
 
-public class Cell {
-    public final char character = 'X';
-    public final boolean isBlocking = true;
-    public final boolean allowSpawn = false;
+public abstract class Cell {
+    private char character = 'X';
+    private boolean isBlocking = true;
+    private boolean allowSpawn = false;
 
-    public String toString() {
-        return character + "  ";
-    }
-
-    public void onEnter() {
-        return;
-    }
+    public abstract String toString();
+    public abstract boolean isBlocking();
+    public abstract boolean isSpawnAllowed();
+    public abstract void onEnter();
 }

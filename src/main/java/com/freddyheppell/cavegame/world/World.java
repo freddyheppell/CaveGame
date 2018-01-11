@@ -7,14 +7,17 @@ import com.freddyheppell.cavegame.world.coord.WorldCoordinate;
 import com.google.gson.Gson;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class World {
     private SeedManager seedManager;
     //    private RegionCache regionCache;
+    private Map<RegionCoordinate, Region> regions;
     public Region region;
 
     public World(SeedManager seedManager) {
         this.seedManager = seedManager;
+        this.regions = new HashMap<>();
 //        this.regionCache = new RegionCache();
     }
 
@@ -24,6 +27,12 @@ public class World {
      * @param regionCoordinate The coordinates of the region
      */
     public void createRegion(RegionCoordinate regionCoordinate) {
+//        System.out.println("Now creating region " + regionCoordinate);
+        System.out.println(regions.keySet());
+        if (regions.containsKey(regionCoordinate)) {
+            throw new RuntimeException("Attempted to generate existing region");
+        }
+
         Region region = new Region(seedManager.getRegionSeed(regionCoordinate));
 
         region.populateRandomly();
@@ -32,11 +41,22 @@ public class World {
             region.iteration();
         }
 
-        this.region = region;
+        regions.put(regionCoordinate, region);
+    }
+
+    public Region getOrGenerateRegion(RegionCoordinate regionCoordinate) {
+        if (regions.containsKey(regionCoordinate)) {
+//            System.out.println("Already has " + regionCoordinate);
+            return regions.get(regionCoordinate);
+        } else {
+//            System.out.println("Creating " + regionCoordinate);
+            createRegion(regionCoordinate);
+            return regions.get(regionCoordinate);
+        }
     }
 
     public Region getRegion(RegionCoordinate regionCoordinate) {
-        return region;
+        return getOrGenerateRegion(regionCoordinate);
     }
 
     public Cell getCell(WorldCoordinate worldCoordinate) {
@@ -46,7 +66,7 @@ public class World {
 
     public WorldCoordinate getEmptyCellNear(WorldCoordinate worldCoordinate) {
         // First, check if the supplied cell is empty
-        if (getCell(worldCoordinate).isNonBlocking()) {
+        if (!getCell(worldCoordinate).isBlocking()) {
             return worldCoordinate;
         }
 

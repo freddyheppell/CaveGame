@@ -11,4 +11,5 @@ public class Config {
     public static final int PLAYER_VIEW_DISTANCE_V = 20;
     public static final boolean SHOULD_CLEAR_SCREEN = true;
     public static final long FRAME_SLEEP_TIME = 3/4;
+    public static final char PLAYER_INDICATOR = 'P';
 }
