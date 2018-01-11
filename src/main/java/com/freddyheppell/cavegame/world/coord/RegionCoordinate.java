@@ -35,7 +35,7 @@ public class RegionCoordinate {
 
         RegionCoordinate regionCoordinate = (RegionCoordinate) o;
 
-        return rx == regionCoordinate.rx && rx == regionCoordinate.ry;
+        return rx == regionCoordinate.rx && ry == regionCoordinate.ry;
     }
 
     /**
