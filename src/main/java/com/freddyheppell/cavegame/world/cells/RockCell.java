@@ -1,11 +1,10 @@
 package com.freddyheppell.cavegame.world.cells;
 
 public class RockCell extends Cell {
-    private char character = '#';
 
     @Override
     public String toString() {
-        return character + "  ";
+        return "#" + "  ";
     }
 
     @Override

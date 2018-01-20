@@ -11,52 +11,19 @@ import java.util.Map;
 
 public class World {
     private SeedManager seedManager;
-    //    private RegionCache regionCache;
-    private Map<RegionCoordinate, Region> regions;
+    private RegionManager regionManager;
     public Region region;
 
     public World(SeedManager seedManager) {
         this.seedManager = seedManager;
-        this.regions = new HashMap<>();
-//        this.regionCache = new RegionCache();
+        this.regionManager = new RegionManager("Testing World", seedManager);
+//
     }
 
-    /**
-     * Create a region at the specified coordinates
-     *
-     * @param regionCoordinate The coordinates of the region
-     */
-    public void createRegion(RegionCoordinate regionCoordinate) {
-//        System.out.println("Now creating region " + regionCoordinate);
-        System.out.println(regions.keySet());
-        if (regions.containsKey(regionCoordinate)) {
-            throw new RuntimeException("Attempted to generate existing region");
-        }
-
-        Region region = new Region(seedManager.getRegionSeed(regionCoordinate));
-
-        region.populateRandomly();
-
-        for (int i = 0; i < Config.ITERATION_COUNT; i++) {
-            region.iteration();
-        }
-
-        regions.put(regionCoordinate, region);
-    }
-
-    public Region getOrGenerateRegion(RegionCoordinate regionCoordinate) {
-        if (regions.containsKey(regionCoordinate)) {
-//            System.out.println("Already has " + regionCoordinate);
-            return regions.get(regionCoordinate);
-        } else {
-//            System.out.println("Creating " + regionCoordinate);
-            createRegion(regionCoordinate);
-            return regions.get(regionCoordinate);
-        }
-    }
 
     public Region getRegion(RegionCoordinate regionCoordinate) {
-        return getOrGenerateRegion(regionCoordinate);
+        Region region = regionManager.getRegion(regionCoordinate);
+        return regionManager.getRegion(regionCoordinate);
     }
 
     public Cell getCell(WorldCoordinate worldCoordinate) {

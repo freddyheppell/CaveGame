@@ -1,8 +1,6 @@
 package com.freddyheppell.cavegame.world.cells;
 
 public class FloorCell extends Cell {
-    private char character = ' ';
-
     @Override
     public boolean isBlocking() {
         return false;
@@ -19,7 +17,7 @@ public class FloorCell extends Cell {
 
     @Override
     public String toString() {
-        return character + "  ";
+        return "   ";
     }
 
 }

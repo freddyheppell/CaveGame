@@ -18,13 +18,13 @@ public class Game {
     private World world;
     private Player player;
     private SeedManager seedManager;
+    private String gameName;
 
     public Game() {
-//        System.out.println("Hello there");
         this.seedManager = new SeedManager(Config.SEED);
         this.world = new World(seedManager);
-        world.createRegion(new RegionCoordinate(0, 0));
-        player = new Player(new WorldCoordinate(16, 14));
+        this.player = new Player(new WorldCoordinate(16, 14));
+        this.gameName = "Test";
     }
 
     public void gameLoop() {
