@@ -7,12 +7,22 @@ import com.google.gson.Gson;
 
 import java.io.*;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class RegionManager {
     /**
      * Cached results of checking if the region exists on disk
      */
     private HashMap<RegionCoordinate, Boolean> regionLookupCache;
+
+    private LinkedHashMap<RegionCoordinate, Region> regionCache = new LinkedHashMap<RegionCoordinate, Region>() {
+        @Override
+        protected boolean removeEldestEntry(Map.Entry eldest) {
+            return size() > Config.REGION_CACHE_SIZE;
+        }
+    };
+
     /**
      * The directory in which to put savedata
      */
@@ -21,7 +31,6 @@ public class RegionManager {
      * The game's SeedManager
      */
     private SeedManager seedManager;
-    private RegionCoordinate regionCoordinate;
 
     public RegionManager(String worldName, SeedManager seedManager) {
         saveDir = SaveManager.getSaveFolder(worldName);
@@ -38,13 +47,31 @@ public class RegionManager {
      */
     private boolean regionExists(RegionCoordinate regionCoordinate) {
         if (regionLookupCache.containsKey(regionCoordinate)) {
+            // If the region is already in the cache, retrieve it
             return regionLookupCache.get(regionCoordinate);
+        } else {
+            // Otherwise, get the region
+            boolean regionExists = SaveManager.getRegionFile(saveDir, regionCoordinate).exists();
+            // and put it in the cache
+            regionLookupCache.put(regionCoordinate, regionExists);
+
+            return regionExists;
         }
+    }
 
-        boolean regionExists = SaveManager.getRegionFile(saveDir, regionCoordinate).exists();
-        regionLookupCache.put(regionCoordinate, regionExists);
-
-        return regionExists;
+    public Region loadRegion(File saveDir, RegionCoordinate regionCoordinate) {
+        if (regionCache.containsKey(regionCoordinate)) {
+            return regionCache.get(regionCoordinate);
+        } else {
+            try {
+                Region region = SaveManager.loadRegion(saveDir, regionCoordinate);
+                regionCache.put(regionCoordinate, region);
+                return region;
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                throw new RuntimeException("Save file could not be loaded");
+            }
+        }
     }
 
     /**
@@ -54,15 +81,10 @@ public class RegionManager {
      * @return The specified region
      */
     public Region getRegion(RegionCoordinate regionCoordinate) {
-        this.regionCoordinate = regionCoordinate;
         if (regionExists(regionCoordinate)) {
             // The Region already exists
-            try {
-               return SaveManager.loadRegion(saveDir, regionCoordinate);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-                throw new RuntimeException("Save file could not be loaded");
-            }
+
+            return loadRegion(saveDir, regionCoordinate);
 
         } else {
             // The Region needs to be created

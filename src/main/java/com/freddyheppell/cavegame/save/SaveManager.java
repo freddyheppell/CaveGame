@@ -6,7 +6,6 @@ import com.freddyheppell.cavegame.world.cells.EmptyCell;
 import com.freddyheppell.cavegame.world.cells.FloorCell;
 import com.freddyheppell.cavegame.world.cells.RockCell;
 import com.freddyheppell.cavegame.world.coord.RegionCoordinate;
-import com.freddyheppell.cavegame.world.coord.WorldCoordinate;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
