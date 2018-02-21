@@ -36,8 +36,7 @@ public class OutputFrame {
             if (worldCoordinate.equals(player.getWorldCoordinate())) {
                 outputString.append(Config.PLAYER_INDICATOR).append("  ");
             } else {
-//                outputString.append(worldCoordinate);
-                outputString.append(world.getCell(worldCoordinate));
+                outputString.append(world.getCell(worldCoordinate)).append("  ");
             }
 
             lastY = worldCoordinate.wy;

@@ -6,7 +6,7 @@ public class RockCell extends Cell {
 
     @Override
     public String toString() {
-        return "#" + "  ";
+        return "#";
     }
 
     @Override

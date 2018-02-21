@@ -5,7 +5,7 @@ import com.freddyheppell.cavegame.entities.Player;
 public class EmptyCell extends Cell {
     @Override
     public String toString() {
-        return "X" + "  ";
+        return "X";
     }
 
     @Override

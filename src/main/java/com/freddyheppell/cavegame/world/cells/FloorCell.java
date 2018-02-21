@@ -20,7 +20,7 @@ public class FloorCell extends Cell {
 
     @Override
     public String toString() {
-        return "   ";
+        return "";
     }
 
 }
