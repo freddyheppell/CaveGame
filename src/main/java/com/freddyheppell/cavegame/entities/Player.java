@@ -1,12 +1,15 @@
 package com.freddyheppell.cavegame.entities;
 
 import com.freddyheppell.cavegame.config.Config;
+import com.freddyheppell.cavegame.items.Item;
 import com.freddyheppell.cavegame.world.coord.WorldCoordinate;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Player extends Entity {
+
+    ArrayList<Item> inventory = new ArrayList<>();
 
     public Player(WorldCoordinate worldCoordinate) {
         super(worldCoordinate);
@@ -38,4 +41,33 @@ public class Player extends Entity {
 
         return validCoords;
     }
+
+    /**
+     * Add a single item to the inventory
+     *
+     * @param item The single item
+     */
+    public void addItem(Item item) {
+        inventory.add(item);
+    }
+
+    public void inventoryDebug() {
+        System.out.println("INVENTORY");
+        for (Item item :
+                inventory) {
+            System.out.println(item.getDisplayName());
+
+        }
+        System.out.println("END INVENTORY");
+    }
+
+    /**
+     * Add multiple items to the inventory
+     *
+     * @param items An ArrayList of items
+     */
+    public void addItems(ArrayList<Item> items) {
+        inventory.addAll(items);
+    }
+
 }
