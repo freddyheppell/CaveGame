@@ -3,6 +3,7 @@ package com.freddyheppell.cavegame;
 import com.freddyheppell.cavegame.config.Config;
 import com.freddyheppell.cavegame.input.EnumKey;
 import com.freddyheppell.cavegame.entities.Player;
+import com.freddyheppell.cavegame.items.ItemRegistry;
 import com.freddyheppell.cavegame.utility.ClearScreen;
 import com.freddyheppell.cavegame.utility.ReadInput;
 import com.freddyheppell.cavegame.world.OutputFrame;
@@ -12,6 +13,7 @@ import com.freddyheppell.cavegame.world.coord.RegionCoordinate;
 import com.freddyheppell.cavegame.world.coord.WorldCoordinate;
 import com.freddyheppell.cavegame.world.coord.CoordinateProperties;
 
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 public class Game {
@@ -25,9 +27,10 @@ public class Game {
         this.world = new World(seedManager);
         this.player = new Player(new WorldCoordinate(16, 14));
         this.gameName = "Test";
+        ItemRegistry.doRegister();
     }
 
-    public void gameLoop() {
+    public void gameLoop() throws IOException {
         OutputFrame outputFrame = new OutputFrame(world, player);
         String output = outputFrame.toString();
         ClearScreen.clear();
@@ -35,7 +38,6 @@ public class Game {
 
 
         int consoleInput = ReadInput.readInput();
-        System.out.println("Got char" + consoleInput);
         EnumKey key = EnumKey.valueOf(consoleInput);
 
         switch (key) {

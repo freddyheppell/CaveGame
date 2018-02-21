@@ -11,9 +11,10 @@ public class RegionCoordinate {
         this.ry = ry;
     }
 
-    /** A representation of class data for comparison, HashMap keys etc.
+    /**
+     * Get a hash representation of the coordinate
      *
-     * @return the object's hash
+     * @return The hash of the coordinate
      */
     @Override
     public int hashCode() {
@@ -41,7 +42,7 @@ public class RegionCoordinate {
     /**
      * Get a string representation of the coordinate
      *
-     * @return
+     * @return The coordinate as an ordered pair
      */
     public String toString() {
         return String.format("R: (%d, %d)", rx, ry);

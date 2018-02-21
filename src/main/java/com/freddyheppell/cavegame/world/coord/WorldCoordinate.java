@@ -35,8 +35,8 @@ public class WorldCoordinate {
     /**
      * Create a new coordinate that has been altered by the transform
      *
-     * @param transform
-     * @return
+     * @param transform The transform to be added
+     * @return A new World Coordinate with the transform applied
      */
     public WorldCoordinate addTransform(Transform transform) {
         int newX = wx + transform.dx;
@@ -85,7 +85,7 @@ public class WorldCoordinate {
     /**
      * Get a string representation of the coordinate
      *
-     * @return
+     * @return The world coordinate and derived region and cell coordinates as ordered pairs
      */
     public String toString() {
         return String.format("W:(%d,%d), R: (%d, %d), C: (%d, %d)", wx, wy, rx, ry, cx, cy);

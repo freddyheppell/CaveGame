@@ -31,7 +31,7 @@ public class SeedManager {
     /**
      * Get the global seed
      *
-     * @return
+     * @return Get the global seed in numerical form
      */
     public long getWorldSeed() {
         return strToLong(worldSeed);

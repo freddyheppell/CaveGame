@@ -17,12 +17,10 @@ public class World {
     public World(SeedManager seedManager) {
         this.seedManager = seedManager;
         this.regionManager = new RegionManager("Testing World", seedManager);
-//
     }
 
 
     public Region getRegion(RegionCoordinate regionCoordinate) {
-        Region region = regionManager.getRegion(regionCoordinate);
         return regionManager.getRegion(regionCoordinate);
     }
 
@@ -31,6 +29,7 @@ public class World {
         return region.getCellIfExists(worldCoordinate);
     }
 
+    // TODO Finish implementing the cell finding logic
     public WorldCoordinate getEmptyCellNear(WorldCoordinate worldCoordinate) {
         // First, check if the supplied cell is empty
         if (!getCell(worldCoordinate).isBlocking()) {
@@ -39,19 +38,4 @@ public class World {
 
         return WorldCoordinate.origin();
     }
-
-
-    /**
-     * Get the JSON representation of the world
-     *
-     * @return
-     */
-    public String getSaveData() {
-        HashMap<String, Object> saveData = new HashMap<>();
-        saveData.put("seed", seedManager);
-
-        Gson gson = new Gson();
-        return gson.toJson(saveData);
-    }
-
 }

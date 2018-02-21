@@ -15,6 +15,7 @@ public class Entity {
 
     /**
      * The Entity class should not be directly instantiated
+     * @param worldCoordinate The location of the entity
      */
     public Entity(WorldCoordinate worldCoordinate) {
         this.worldCoordinate = worldCoordinate;
@@ -35,6 +36,7 @@ public class Entity {
      * @return A `List` of visible cells
      */
     public List<WorldCoordinate> visibleCells() {
+        // TODO: Radial view area
         return new ArrayList<>();
     }
 
@@ -42,16 +44,16 @@ public class Entity {
      * Move the entity by a transform
      *
      * @param transform the `Transform` to move the entity by
+     * @param world The world instance to verify that the transform leads to a valid cell
      */
     public void move(Transform transform, World world) {
         WorldCoordinate newCoordinate = worldCoordinate.addTransform(transform);
         Cell targetCell = world.getCell(newCoordinate);
         System.out.println(newCoordinate);
 
-        if (!targetCell.isSpawnAllowed()) {
+        if (targetCell.isBlocking()) {
             // If the move is not valid, do not perform it
             System.out.println("BAD MOVE");
-            return;
         } else {
             // If it is valid, change the player's coordinates
             worldCoordinate = newCoordinate;
