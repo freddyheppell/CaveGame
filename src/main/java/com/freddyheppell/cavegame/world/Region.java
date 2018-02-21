@@ -1,10 +1,7 @@
 package com.freddyheppell.cavegame.world;
 
 import com.freddyheppell.cavegame.config.Config;
-import com.freddyheppell.cavegame.world.cells.Cell;
-import com.freddyheppell.cavegame.world.cells.EmptyCell;
-import com.freddyheppell.cavegame.world.cells.FloorCell;
-import com.freddyheppell.cavegame.world.cells.RockCell;
+import com.freddyheppell.cavegame.world.cells.*;
 import com.freddyheppell.cavegame.world.coord.WorldCoordinate;
 import com.freddyheppell.cavegame.world.coord.CoordinateProperties;
 
@@ -34,6 +31,20 @@ public class Region {
                     cells[x][y] = new FloorCell();
                 } else {
                     cells[x][y] = new RockCell();
+                }
+            }
+        }
+    }
+
+    public void generateChests() {
+        for(int x=0; x < Config.REGION_SIZE; x++) {
+            for (int y=0; y < Config.REGION_SIZE; y++) {
+                float randomValue = random.nextFloat();
+
+                if ((randomValue > Config.CHEST_SPAWN_BOUNDARY) && (cells[x][y].getClass() == FloorCell.class)) {
+                    ChestCell chestCell = new ChestCell();
+                    chestCell.generate();
+                    cells[x][y] = chestCell;
                 }
             }
         }

@@ -1,5 +1,7 @@
 package com.freddyheppell.cavegame.world.cells;
 
+import com.freddyheppell.cavegame.entities.Player;
+
 public class RockCell extends Cell {
 
     @Override
@@ -18,7 +20,7 @@ public class RockCell extends Cell {
     }
 
     @Override
-    public void onEnter() {
+    public void onEnter(Player player) {
 
     }
 

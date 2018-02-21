@@ -87,27 +87,35 @@ public class RegionManager {
             return loadRegion(saveDir, regionCoordinate);
 
         } else {
-            // The Region needs to be created
-            Region region = new Region(seedManager.getRegionSeed(regionCoordinate));
-            // Populate the region with random cells
-            region.populateRandomly();
+            return createRegion(regionCoordinate);
 
-            // Perform the required iterations
-            for (int i = 0; i < Config.ITERATION_COUNT; i++) {
-                region.iteration();
-            }
+        }
+    }
 
-            try {
-                // Attempt to save the region to disk
-                SaveManager.saveRegion(region, SaveManager.getRegionFile(saveDir, regionCoordinate));
-                regionLookupCache.put(regionCoordinate, true);
+    private Region createRegion(RegionCoordinate regionCoordinate) {
+        // The Region needs to be created
+        Region region = new Region(seedManager.getRegionSeed(regionCoordinate));
+        // Populate the region with random cells
+        region.populateRandomly();
 
-                return region;
+        // Perform the required iterations
+        for (int i = 0; i < Config.ITERATION_COUNT; i++) {
+            region.iteration();
+        }
 
-            } catch (IOException e) {
-                e.printStackTrace();
-                throw new RuntimeException("Could not load file");
-            }
+        // Add chests randomly
+        region.generateChests();
+
+        try {
+            // Attempt to save the region to disk
+            SaveManager.saveRegion(region, SaveManager.getRegionFile(saveDir, regionCoordinate));
+            regionLookupCache.put(regionCoordinate, true);
+
+            return region;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Could not load file");
         }
     }
 }

@@ -1,5 +1,7 @@
 package com.freddyheppell.cavegame.world.cells;
 
+import com.freddyheppell.cavegame.entities.Player;
+
 public class FloorCell extends Cell {
     @Override
     public boolean isBlocking() {
@@ -12,7 +14,8 @@ public class FloorCell extends Cell {
     }
 
     @Override
-    public void onEnter() {
+    public void onEnter(Player player) {
+
     }
 
     @Override

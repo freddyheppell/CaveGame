@@ -1,10 +1,7 @@
 package com.freddyheppell.cavegame.save;
 
 import com.freddyheppell.cavegame.world.Region;
-import com.freddyheppell.cavegame.world.cells.Cell;
-import com.freddyheppell.cavegame.world.cells.EmptyCell;
-import com.freddyheppell.cavegame.world.cells.FloorCell;
-import com.freddyheppell.cavegame.world.cells.RockCell;
+import com.freddyheppell.cavegame.world.cells.*;
 import com.freddyheppell.cavegame.world.coord.RegionCoordinate;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -19,10 +16,11 @@ public class SaveManager {
      * and deserialise polymorphic classes
      */
     private static final RuntimeTypeAdapterFactory<Cell> CELL_ADAPTER_FACTORY = RuntimeTypeAdapterFactory
-            .of(Cell.class)
-            .registerSubtype(EmptyCell.class, "EmptyCell")
-            .registerSubtype(FloorCell.class, "FloorCell")
-            .registerSubtype(RockCell.class, "RockCell");
+            .of(Cell.class, "t")
+            .registerSubtype(EmptyCell.class, "e")
+            .registerSubtype(FloorCell.class, "f")
+            .registerSubtype(RockCell.class, "r")
+            .registerSubtype(ChestCell.class, "c");
 
     /**
      * Get the file name of a region at the given coordinates
@@ -114,7 +112,7 @@ public class SaveManager {
     /**
      * Save a region to disk
      *
-     * @param region The Region instance
+     * @param region       The Region instance
      * @param saveLocation The File location to save the Region to
      * @throws IOException If the file was unable to be saved
      */
@@ -130,7 +128,7 @@ public class SaveManager {
     /**
      * Load a region from disk
      *
-     * @param saveDir The directory to load from
+     * @param saveDir          The directory to load from
      * @param regionCoordinate The coordinate of the region
      * @return The Region instance
      * @throws FileNotFoundException If the file could not be found
