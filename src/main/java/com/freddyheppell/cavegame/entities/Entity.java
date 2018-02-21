@@ -10,8 +10,6 @@ import java.util.List;
 
 public class Entity {
     protected WorldCoordinate worldCoordinate;
-    private int viewDistance = 0;
-    private char entityChar = 'X';
 
     /**
      * The Entity class should not be directly instantiated
@@ -58,5 +56,9 @@ public class Entity {
             // If it is valid, change the player's coordinates
             worldCoordinate = newCoordinate;
         }
+    }
+
+    public String toString() {
+        return "";
     }
 }

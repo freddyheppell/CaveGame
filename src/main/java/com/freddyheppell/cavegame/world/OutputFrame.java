@@ -34,7 +34,7 @@ public class OutputFrame {
             }
 
             if (worldCoordinate.equals(player.getWorldCoordinate())) {
-                outputString.append(Config.PLAYER_INDICATOR).append("  ");
+                outputString.append(player).append("  ");
             } else {
                 outputString.append(world.getCell(worldCoordinate)).append("  ");
             }

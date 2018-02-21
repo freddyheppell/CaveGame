@@ -70,4 +70,7 @@ public class Player extends Entity {
         inventory.addAll(items);
     }
 
+    public String toString() {
+        return "P";
+    }
 }
