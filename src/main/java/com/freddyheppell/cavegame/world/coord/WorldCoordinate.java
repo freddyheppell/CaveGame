@@ -72,6 +72,10 @@ public class WorldCoordinate {
         return new RegionCoordinate(rx, ry);
     }
 
+    public CellCoordinate getCellCoordinate() {
+        return new CellCoordinate(cx, cy);
+    }
+
     /**
      * A representation of class data for comparison, HashMap keys etc.
      *

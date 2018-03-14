@@ -2,7 +2,7 @@ package com.freddyheppell.cavegame.items;
 
 public class Item {
 
-    private int dropWeight;
+    private transient int dropWeight;
 
 
     /**
@@ -19,7 +19,7 @@ public class Item {
     }
 
     public String getDisplayName() {
-        throw new UnsupportedOperationException("Cannot generate display name for generic item");
+        return "Generic Item";
     }
 
     public boolean isWeapon() {

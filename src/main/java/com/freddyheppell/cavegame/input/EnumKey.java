@@ -10,6 +10,9 @@ public enum EnumKey {
     DIR_EAST('d'),
     DIR_WEST('a'),
 
+    // INVENTORY
+    OPEN_INV('i'),
+
     // MISC
     QUIT('q');
 

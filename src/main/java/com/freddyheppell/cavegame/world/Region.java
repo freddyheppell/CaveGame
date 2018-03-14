@@ -1,16 +1,23 @@
 package com.freddyheppell.cavegame.world;
 
 import com.freddyheppell.cavegame.config.Config;
+import com.freddyheppell.cavegame.entities.Entity;
+import com.freddyheppell.cavegame.entities.Monster;
 import com.freddyheppell.cavegame.world.cells.*;
+import com.freddyheppell.cavegame.world.coord.CellCoordinate;
 import com.freddyheppell.cavegame.world.coord.WorldCoordinate;
 import com.freddyheppell.cavegame.world.coord.CoordinateProperties;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Random;
 
 public class Region {
     private Cell[][] cells = new Cell[Config.REGION_SIZE][Config.REGION_SIZE];
     private Random random;
+    private EventManager eventManager;
+    private HashMap<CellCoordinate, Entity> entities = new HashMap<>();
 
     public Region(long seed) {
         random = new Random(seed);

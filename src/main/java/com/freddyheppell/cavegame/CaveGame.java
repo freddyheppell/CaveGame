@@ -5,8 +5,9 @@ import java.io.IOException;
 
 public class CaveGame {
 
+    public static final Game game = new Game();
+
     public static void main(String[] args) {
-        Game game = new Game();
         while (true) {
             try {
                 game.gameLoop();

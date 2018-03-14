@@ -17,7 +17,7 @@ public class SwordItem extends Item {
 
     @Override
     public String getDisplayName() {
-        return String.format("%s Sword (%d)", tier, damage);
+        return String.format("%s Sword (%d Dmg)", tier, damage);
     }
 
     @Override

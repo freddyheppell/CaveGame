@@ -4,40 +4,49 @@ import com.freddyheppell.cavegame.config.Config;
 import com.freddyheppell.cavegame.input.EnumKey;
 import com.freddyheppell.cavegame.entities.Player;
 import com.freddyheppell.cavegame.items.ItemRegistry;
-import com.freddyheppell.cavegame.utility.ClearScreen;
-import com.freddyheppell.cavegame.utility.ReadInput;
+import com.freddyheppell.cavegame.utility.Console;
 import com.freddyheppell.cavegame.world.OutputFrame;
+import com.freddyheppell.cavegame.world.Region;
 import com.freddyheppell.cavegame.world.SeedManager;
 import com.freddyheppell.cavegame.world.World;
+import com.freddyheppell.cavegame.world.coord.CoordinateProperties;
 import com.freddyheppell.cavegame.world.coord.RegionCoordinate;
 import com.freddyheppell.cavegame.world.coord.WorldCoordinate;
-import com.freddyheppell.cavegame.world.coord.CoordinateProperties;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 public class Game {
-    private World world;
+    public World world;
     private Player player;
     private SeedManager seedManager;
+
     private String gameName;
 
     public Game() {
+        ItemRegistry.getInstance().doRegister();
         this.seedManager = new SeedManager(Config.SEED);
         this.world = new World(seedManager);
-        this.player = new Player(new WorldCoordinate(16, 14));
+        this.player = new Player(world.getSpawnLocation());
         this.gameName = "Test";
-        ItemRegistry.doRegister();
+
+        System.out.println("Height" + Console.getWidth());
+        System.out.print("Width" + Console.getHeight());
+
     }
+
+    public World getWorld() {
+        return world;
+    }
+
 
     public void gameLoop() throws IOException {
         OutputFrame outputFrame = new OutputFrame(world, player);
         String output = outputFrame.toString();
-        ClearScreen.clear();
+        Console.clearScreen();
         System.out.println(output);
 
-
-        int consoleInput = ReadInput.readInput();
+        int consoleInput = Console.readInput();
         EnumKey key = EnumKey.valueOf(consoleInput);
 
         switch (key) {
@@ -52,6 +61,9 @@ public class Game {
                 break;
             case DIR_WEST:
                 player.move(CoordinateProperties.RIGHT, world);
+                break;
+            case OPEN_INV:
+                player.showInventory();
                 break;
             case QUIT:
                 break;

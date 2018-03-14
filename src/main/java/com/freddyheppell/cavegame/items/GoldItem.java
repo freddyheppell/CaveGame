@@ -23,7 +23,7 @@ public class GoldItem extends Item {
 
     @Override
     public String getDisplayName() {
-        return String.format("Gold (%d)", value);
+        return String.format("Gold (%d G)", value);
     }
 
     /**

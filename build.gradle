@@ -49,4 +49,5 @@ dependencies {
     compile group: 'org.danilopianini', name: 'gson-extras', version: '0.2.1'
     compile group: 'net.java.dev.jna', name: 'jna', version: '4.5.1'
     compile group: 'uk.com.robust-it', name: 'cloning', version: '1.9.9'
+    compile group: 'org.jline', name: 'jline', version: '3.5.1'
 }

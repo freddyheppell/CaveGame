@@ -1,9 +1,12 @@
 package com.freddyheppell.cavegame.world.cells;
 
+import com.freddyheppell.cavegame.CaveGame;
 import com.freddyheppell.cavegame.config.Config;
 import com.freddyheppell.cavegame.entities.Player;
 import com.freddyheppell.cavegame.items.Item;
 import com.freddyheppell.cavegame.items.ItemRegistry;
+import com.freddyheppell.cavegame.world.coord.RegionCoordinate;
+import com.freddyheppell.cavegame.world.coord.WorldCoordinate;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -12,7 +15,7 @@ public class ChestCell extends Cell {
     /**
      * The items to be given to the player
      */
-    private ArrayList<Item> reward = new ArrayList<>();
+    public ArrayList<Item> reward = new ArrayList<>();
     /**
      * If the chest has been claimed yet or not
      */
@@ -43,7 +46,7 @@ public class ChestCell extends Cell {
     }
 
     @Override
-    public void onEnter(Player player) {
+    public void onEnter(Player player, RegionCoordinate regionCoordinate) {
         if (!claimed) {
             // Give the contents of the chest to the player
             player.addItems(reward);
@@ -51,6 +54,8 @@ public class ChestCell extends Cell {
             reward.clear();
             // Mark as claimed
             claimed = true;
+
+            CaveGame.game.world.resaveRegion(regionCoordinate);
         }
     }
 

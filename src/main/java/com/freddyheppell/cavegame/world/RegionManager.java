@@ -1,5 +1,6 @@
 package com.freddyheppell.cavegame.world;
 
+import com.freddyheppell.cavegame.CaveGame;
 import com.freddyheppell.cavegame.config.Config;
 import com.freddyheppell.cavegame.save.SaveManager;
 import com.freddyheppell.cavegame.world.coord.RegionCoordinate;
@@ -116,6 +117,17 @@ public class RegionManager {
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException("Could not load file");
+        }
+    }
+
+    public void resaveRegion(RegionCoordinate regionCoordinate) {
+        Region region = CaveGame.game.getWorld().getRegion(regionCoordinate);
+
+        try {
+            SaveManager.saveRegion(region, SaveManager.getRegionFile(saveDir, regionCoordinate));
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Unable to resave file");
         }
     }
 }

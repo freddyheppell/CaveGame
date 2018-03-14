@@ -1,8 +1,6 @@
 package com.freddyheppell.cavegame.world;
 
-import com.freddyheppell.cavegame.config.Config;
 import com.freddyheppell.cavegame.entities.Player;
-import com.freddyheppell.cavegame.world.cells.Cell;
 import com.freddyheppell.cavegame.world.coord.WorldCoordinate;
 
 import java.util.List;
@@ -25,7 +23,7 @@ public class OutputFrame {
 
         StringBuilder outputString = new StringBuilder();
 
-        List<WorldCoordinate> visibleCells = player.visibleCells();
+        List<WorldCoordinate> visibleCells = player.getVisibleCells();
         int lastY = visibleCells.get(0).wy;
 
         for (WorldCoordinate worldCoordinate : visibleCells) {
@@ -33,7 +31,7 @@ public class OutputFrame {
                 outputString.append("\n");
             }
 
-            if (worldCoordinate.equals(player.getWorldCoordinate())) {
+            if (worldCoordinate.equals(player.getLocation())) {
                 outputString.append(player).append("  ");
             } else {
                 outputString.append(world.getCell(worldCoordinate)).append("  ");

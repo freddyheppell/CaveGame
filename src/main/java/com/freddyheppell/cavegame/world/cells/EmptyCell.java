@@ -1,6 +1,7 @@
 package com.freddyheppell.cavegame.world.cells;
 
 import com.freddyheppell.cavegame.entities.Player;
+import com.freddyheppell.cavegame.world.coord.RegionCoordinate;
 
 public class EmptyCell extends Cell {
     @Override
@@ -19,7 +20,7 @@ public class EmptyCell extends Cell {
     }
 
     @Override
-    public void onEnter(Player player) {
+    public void onEnter(Player player, RegionCoordinate regionCoordinate) {
 
     }
 }

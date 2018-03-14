@@ -17,7 +17,7 @@ public class ArmourItem extends Item {
 
     @Override
     public String getDisplayName() {
-        return String.format("%s Armour (%d)", tier, shielding);
+        return String.format("%s Armour (%d Prot)", tier, shielding);
     }
 
     @Override
