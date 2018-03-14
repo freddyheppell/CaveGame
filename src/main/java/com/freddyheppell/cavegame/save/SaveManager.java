@@ -124,7 +124,7 @@ public class SaveManager {
         Gson gson = new GsonBuilder().registerTypeAdapterFactory(CELL_ADAPTER_FACTORY)
                 .registerTypeAdapterFactory(ITEM_ADAPTER_FACTORY).create();
         System.out.println("STARTING SAVE");
-        Writer writer = new FileWriter(saveLocation,false);
+        Writer writer = new FileWriter(saveLocation, false);
         gson.toJson(region, writer);
         writer.close();
         System.out.println("ENDING SAVE");

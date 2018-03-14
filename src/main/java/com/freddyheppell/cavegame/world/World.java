@@ -1,15 +1,12 @@
 package com.freddyheppell.cavegame.world;
 
-import com.freddyheppell.cavegame.config.Config;
 import com.freddyheppell.cavegame.entities.Entity;
 import com.freddyheppell.cavegame.world.cells.Cell;
 import com.freddyheppell.cavegame.world.coord.CoordinateProperties;
 import com.freddyheppell.cavegame.world.coord.RegionCoordinate;
 import com.freddyheppell.cavegame.world.coord.WorldCoordinate;
-import com.google.gson.Gson;
 
 import java.util.HashMap;
-import java.util.Map;
 
 public class World {
     private SeedManager seedManager;
@@ -49,7 +46,7 @@ public class World {
         return null;
     }
 
-    public void resaveRegion(RegionCoordinate regionCoordinate) {
-        regionManager.resaveRegion(regionCoordinate);
+    public RegionManager getRegionManager() {
+        return regionManager;
     }
 }

@@ -40,9 +40,7 @@ public class Entity {
     }
 
     /**
-     * Get the cells that are visible to the entity;
-     *
-     * @return A `List` of visible cells
+     * Get the cells that are visible to the entity
      */
     public void calculateVisibleCells() {
         ArrayList<WorldCoordinate> visibleCells = new ArrayList<>();
@@ -111,10 +109,19 @@ public class Entity {
         }
     }
 
+    /**
+     * Event function to be executed after the entity moves
+     *
+     * @param newCoordinate The location of the player now that the move has been performed
+     * @param world         The world instance the move took place in
+     */
     public void afterMove(WorldCoordinate newCoordinate, World world) {
 
     }
 
+    /**
+     * @return The string representation of the entity
+     */
     public String toString() {
         return "";
     }

@@ -6,7 +6,6 @@ import com.freddyheppell.cavegame.entities.Player;
 import com.freddyheppell.cavegame.items.Item;
 import com.freddyheppell.cavegame.items.ItemRegistry;
 import com.freddyheppell.cavegame.world.coord.RegionCoordinate;
-import com.freddyheppell.cavegame.world.coord.WorldCoordinate;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -55,7 +54,7 @@ public class ChestCell extends Cell {
             // Mark as claimed
             claimed = true;
 
-            CaveGame.game.world.resaveRegion(regionCoordinate);
+            CaveGame.game.world.getRegionManager().resaveRegion(regionCoordinate);
         }
     }
 

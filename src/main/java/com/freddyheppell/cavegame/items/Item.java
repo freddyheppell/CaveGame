@@ -42,5 +42,6 @@ public class Item {
     /**
      * An event called when the item is selected to for a loot drop
      */
-    public void onItemSelect() { }
+    public void onItemSelect() {
+    }
 }

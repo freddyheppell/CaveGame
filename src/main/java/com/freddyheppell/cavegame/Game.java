@@ -6,12 +6,9 @@ import com.freddyheppell.cavegame.entities.Player;
 import com.freddyheppell.cavegame.items.ItemRegistry;
 import com.freddyheppell.cavegame.utility.Console;
 import com.freddyheppell.cavegame.world.OutputFrame;
-import com.freddyheppell.cavegame.world.Region;
 import com.freddyheppell.cavegame.world.SeedManager;
 import com.freddyheppell.cavegame.world.World;
 import com.freddyheppell.cavegame.world.coord.CoordinateProperties;
-import com.freddyheppell.cavegame.world.coord.RegionCoordinate;
-import com.freddyheppell.cavegame.world.coord.WorldCoordinate;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;

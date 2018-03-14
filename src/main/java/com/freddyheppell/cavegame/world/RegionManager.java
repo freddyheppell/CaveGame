@@ -4,7 +4,6 @@ import com.freddyheppell.cavegame.CaveGame;
 import com.freddyheppell.cavegame.config.Config;
 import com.freddyheppell.cavegame.save.SaveManager;
 import com.freddyheppell.cavegame.world.coord.RegionCoordinate;
-import com.google.gson.Gson;
 
 import java.io.*;
 import java.util.HashMap;
@@ -35,7 +34,6 @@ public class RegionManager {
 
     public RegionManager(String worldName, SeedManager seedManager) {
         saveDir = SaveManager.getSaveFolder(worldName);
-        String worldName1 = worldName;
         this.seedManager = seedManager;
         this.regionLookupCache = new HashMap<>();
     }

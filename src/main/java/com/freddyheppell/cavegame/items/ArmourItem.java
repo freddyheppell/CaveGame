@@ -6,8 +6,8 @@ public class ArmourItem extends Item {
 
     /**
      * @param dropWeight The integer value by which selection is biased
-     * @param tier The tier to be displayed to the user
-     * @param shielding The shielding the armour provides
+     * @param tier       The tier to be displayed to the user
+     * @param shielding  The shielding the armour provides
      */
     public ArmourItem(int dropWeight, String tier, int shielding) {
         super(dropWeight);

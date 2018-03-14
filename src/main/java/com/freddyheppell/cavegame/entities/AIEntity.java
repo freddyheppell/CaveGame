@@ -6,5 +6,5 @@ public interface AIEntity {
      *
      * @param player The player that has entered the player
      */
-    public void onAttackZoneEnter(Player player);
+    void onAttackZoneEnter(Player player);
 }

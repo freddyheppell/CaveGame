@@ -78,7 +78,7 @@ public class Player extends Entity {
      * When a player has moved, alert the cell
      *
      * @param newCoordinate The player's new location
-     * @param world The world the player is in
+     * @param world         The world the player is in
      */
     @Override
     public void afterMove(WorldCoordinate newCoordinate, World world) {

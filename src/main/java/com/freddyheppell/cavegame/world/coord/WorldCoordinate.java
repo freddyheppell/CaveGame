@@ -29,7 +29,7 @@ public class WorldCoordinate {
     }
 
     public static WorldCoordinate origin() {
-        return new WorldCoordinate(0,0);
+        return new WorldCoordinate(0, 0);
     }
 
     /**

@@ -6,8 +6,8 @@ public class SwordItem extends Item {
 
     /**
      * @param dropWeight The integer value by which selection is biased
-     * @param tier The tier of the item to be displayed to the user
-     * @param damage The amount of damage the sword does to enemies
+     * @param tier       The tier of the item to be displayed to the user
+     * @param damage     The amount of damage the sword does to enemies
      */
     public SwordItem(int dropWeight, String tier, int damage) {
         super(dropWeight);
