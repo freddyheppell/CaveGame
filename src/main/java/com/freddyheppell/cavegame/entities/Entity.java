@@ -9,25 +9,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Entity {
-    protected WorldCoordinate location;
     protected List<WorldCoordinate> visibleCells;
 
     /**
      * The Entity class should not be directly instantiated
-     *
-     * @param location The location of the entity
      */
-    public Entity(WorldCoordinate location) {
-        this.location = location;
-    }
-
-    /**
-     * Get the current world coordinate of the Entity
-     *
-     * @return The entity's world coordinates
-     */
-    public WorldCoordinate getLocation() {
-        return location;
+    public Entity() {
     }
 
     /**
@@ -42,7 +29,7 @@ public class Entity {
     /**
      * Get the cells that are visible to the entity
      */
-    public void calculateVisibleCells() {
+    public void calculateVisibleCells(WorldCoordinate location) {
         ArrayList<WorldCoordinate> visibleCells = new ArrayList<>();
         int r = getViewDistance();
         // a is the decision variable
@@ -87,26 +74,6 @@ public class Entity {
 
     public List<WorldCoordinate> getVisibleCells() {
         return visibleCells;
-    }
-
-    /**
-     * Move the entity by a transform
-     *
-     * @param transform the `Transform` to move the entity by
-     * @param world     The world instance to verify that the transform leads to a valid cell
-     */
-    public void move(Transform transform, World world) {
-        WorldCoordinate newCoordinate = location.addTransform(transform);
-        Cell targetCell = world.getCell(newCoordinate);
-
-        if (targetCell.isBlocking()) {
-            // If the move is not valid, do not perform it
-            System.out.println("BAD MOVE");
-        } else {
-            // If it is valid, change the player's coordinates
-            location = newCoordinate;
-            afterMove(newCoordinate, world);
-        }
     }
 
     /**

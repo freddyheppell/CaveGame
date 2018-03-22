@@ -28,8 +28,6 @@ public enum EnumKey {
 
     static {
         for (EnumKey entry : EnumKey.values()) {
-            System.out.println("Listing chars");
-            System.out.println(entry.charInt);
             map.put(entry.charInt, entry);
         }
     }

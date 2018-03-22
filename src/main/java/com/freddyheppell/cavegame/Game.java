@@ -4,12 +4,17 @@ import com.freddyheppell.cavegame.config.Config;
 import com.freddyheppell.cavegame.input.EnumKey;
 import com.freddyheppell.cavegame.entities.Player;
 import com.freddyheppell.cavegame.items.ItemRegistry;
+import com.freddyheppell.cavegame.save.SaveManager;
 import com.freddyheppell.cavegame.utility.Console;
 import com.freddyheppell.cavegame.world.OutputFrame;
 import com.freddyheppell.cavegame.world.SeedManager;
 import com.freddyheppell.cavegame.world.World;
 import com.freddyheppell.cavegame.world.coord.CoordinateProperties;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
@@ -17,19 +22,38 @@ public class Game {
     public World world;
     private Player player;
     private SeedManager seedManager;
-
     private String gameName;
 
-    public Game() {
+    private static final Logger logger = LogManager.getLogger();
+
+    public Game() throws IOException {
         ItemRegistry.getInstance().doRegister();
-        this.seedManager = new SeedManager(Config.SEED);
+        this.seedManager = new SeedManager(Config.getString("sWorldSeed"));
         this.world = new World(seedManager);
-        this.player = new Player(world.getSpawnLocation());
         this.gameName = "Test";
 
-        System.out.println("Height" + Console.getWidth());
-        System.out.print("Width" + Console.getHeight());
+        // Loading Player
+        File saveDir = SaveManager.getSaveFolder(gameName);
+        if (SaveManager.getPlayerFile(saveDir).exists()) {
+            this.player = SaveManager.loadPlayer(saveDir);
+        } else {
+            this.player = new Player(world.getSpawnLocation());
+            SaveManager.savePlayer(saveDir, player);
+        }
 
+        logger.info("Screen size detected as: {} height, {} width", Console.getHeight(), Console.getWidth());
+
+    }
+
+    public void savePlayer() {
+        File saveDir = SaveManager.getSaveFolder(gameName);
+
+        try {
+            SaveManager.savePlayer(saveDir, this.player);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Unable to resave player!");
+        }
     }
 
     public World getWorld() {
@@ -70,7 +94,7 @@ public class Game {
 
 
         try {
-            TimeUnit.SECONDS.sleep(Config.FRAME_SLEEP_TIME);
+            TimeUnit.SECONDS.sleep(Config.getLong("lFrameSleepTime"));
         } catch (InterruptedException e) {
             throw new RuntimeException("Interrupted during frame sleep");
         }

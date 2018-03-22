@@ -2,6 +2,8 @@ package com.freddyheppell.cavegame.items;
 
 import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
 import com.rits.cloning.Cloner;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 
@@ -9,6 +11,8 @@ public class ItemRegistry {
     private static ItemRegistry itemRegistry = new ItemRegistry();
     private ArrayList<Item> items = new ArrayList<>();
     private double totalWeight = 0.0d;
+    private static final Logger logger = LogManager.getLogger();
+
 
     /**
      * Empty constructor for singleton pattern
@@ -51,13 +55,11 @@ public class ItemRegistry {
      * Must be run each time the registry is changed before items can be selected
      */
     public void generateWeighting() {
-        System.out.println("Generating total weight");
         totalWeight = 0.0d;
         for (Item item : items) {
-            System.out.println(".");
             totalWeight += item.getDropWeight();
         }
-        System.out.println("Total weight" + totalWeight);
+        logger.info("Total item weight {}", totalWeight);
     }
 
     /**

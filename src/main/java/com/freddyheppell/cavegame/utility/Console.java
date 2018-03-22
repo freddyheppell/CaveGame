@@ -13,14 +13,36 @@ public class Console {
      * The OS name of all versions of Windows will begin with "Windows"
      */
     private static final boolean isWindows = System.getProperty("os.name").startsWith("Windows");
+
     /**
      * String to clear screen on *nix systems (mac OS/Linux etc.)
      * First character clears screen, second returns cursor to beginning of screen
      */
     private static final String unixClearString = "\033[H\033[2J";
 
+    public enum OperatingSystem {WINDOWS, MAC, LINUX, UNKNOWN}
+    private static OperatingSystem operatingSystem;
+
+    public static OperatingSystem getOperatingSystem() {
+        String os = System.getProperty("os.name").toUpperCase();
+
+        if (operatingSystem == null) {
+            if (os.contains("WINDOWS")) {
+                operatingSystem = OperatingSystem.WINDOWS;
+            } else if (os.contains("MAC")) {
+                operatingSystem = OperatingSystem.MAC;
+            } else if (os.contains("NUX")) {
+                operatingSystem = OperatingSystem.LINUX;
+            } else {
+                operatingSystem = OperatingSystem.UNKNOWN;
+            }
+        }
+
+        return operatingSystem;
+    }
+
     public static void clearScreen() {
-        if (!Config.SHOULD_CLEAR_SCREEN) {
+        if (!Config.getBoolean("bShouldClearScreen")) {
             // If screen clearing is disabled in the configuration,
             // don't clear it
             return;

@@ -5,6 +5,8 @@ import com.freddyheppell.cavegame.world.cells.Cell;
 import com.freddyheppell.cavegame.world.coord.CoordinateProperties;
 import com.freddyheppell.cavegame.world.coord.RegionCoordinate;
 import com.freddyheppell.cavegame.world.coord.WorldCoordinate;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.HashMap;
 
@@ -14,9 +16,12 @@ public class World {
     private HashMap<WorldCoordinate, Entity> entities = new HashMap<>();
     public Region region;
 
+    private static final Logger logger = LogManager.getLogger();
+
+
     public World(SeedManager seedManager) {
         this.seedManager = seedManager;
-        this.regionManager = new RegionManager("Testing World", seedManager);
+        this.regionManager = new RegionManager("Test", seedManager);
     }
 
 
@@ -36,7 +41,7 @@ public class World {
 
         while (!found) {
             WorldCoordinate spawnCoordinate = CoordinateProperties.getSpiralCoordinate(n);
-            System.out.println("Testing" + spawnCoordinate.toString());
+            logger.debug("Checking {} for spawn suitability", spawnCoordinate.toString());
             if (getCell(spawnCoordinate).isSpawnAllowed()) {
                 return spawnCoordinate;
             }

@@ -7,11 +7,11 @@ public class Monster extends Entity implements AIEntity {
     /**
      * The Entity class should not be directly instantiated
      *
-     * @param worldCoordinate The location of the entity
+     * @param location The location of the entity
      */
-    public Monster(WorldCoordinate worldCoordinate) {
-        super(worldCoordinate);
-        calculateVisibleCells();
+    public Monster(WorldCoordinate location) {
+        super();
+        calculateVisibleCells(location);
     }
 
     @Override

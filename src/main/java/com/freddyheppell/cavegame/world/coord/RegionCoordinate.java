@@ -1,5 +1,7 @@
 package com.freddyheppell.cavegame.world.coord;
 
+import com.freddyheppell.cavegame.config.Config;
+
 import java.util.Objects;
 
 public class RegionCoordinate {
@@ -10,6 +12,7 @@ public class RegionCoordinate {
         this.rx = rx;
         this.ry = ry;
     }
+
 
     /**
      * Get a hash representation of the coordinate
@@ -37,6 +40,15 @@ public class RegionCoordinate {
         RegionCoordinate regionCoordinate = (RegionCoordinate) o;
 
         return rx == regionCoordinate.rx && ry == regionCoordinate.ry;
+    }
+
+    /**
+     * Returns the bottom left corner
+     *
+     * @return The world coordinate of the corner
+     */
+    public WorldCoordinate getCornerWorldCoordinate() {
+        return new WorldCoordinate(rx * Config.getInt("iRegionSize"), ry * Config.getInt("iRegionSize"));
     }
 
     /**

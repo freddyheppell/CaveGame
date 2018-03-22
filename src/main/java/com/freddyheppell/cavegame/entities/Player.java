@@ -1,19 +1,29 @@
 package com.freddyheppell.cavegame.entities;
 
+import com.freddyheppell.cavegame.CaveGame;
+import com.freddyheppell.cavegame.config.Config;
 import com.freddyheppell.cavegame.items.Item;
+import com.freddyheppell.cavegame.save.SaveManager;
 import com.freddyheppell.cavegame.utility.Console;
 import com.freddyheppell.cavegame.world.World;
+import com.freddyheppell.cavegame.world.cells.Cell;
+import com.freddyheppell.cavegame.world.coord.Transform;
 import com.freddyheppell.cavegame.world.coord.WorldCoordinate;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Player extends Entity {
-
     private ArrayList<Item> inventory = new ArrayList<>();
+    private WorldCoordinate location;
+    private transient int moveCounter = 0;
+    private static final Logger logger = LogManager.getLogger();
 
-    public Player(WorldCoordinate worldCoordinate) {
-        super(worldCoordinate);
+    public Player(WorldCoordinate location) {
+        super();
+        this.location = location;
     }
 
     /**
@@ -29,9 +39,6 @@ public class Player extends Entity {
         int rightmostX = location.wx + h;
         int topmostY = location.wy + v;
         int bottommostY = location.wy - v;
-
-        int hSize = (2 * h) + 1;
-        int vSize = (2 * v) + 1;
 
         List<WorldCoordinate> validCoords = new ArrayList<>();
 
@@ -83,6 +90,44 @@ public class Player extends Entity {
     @Override
     public void afterMove(WorldCoordinate newCoordinate, World world) {
         world.getCell(newCoordinate).onEnter(this, newCoordinate.getRegionCoordinate());
+    }
+
+    /**
+     * Move the entity by a transform
+     *
+     * @param transform the `Transform` to move the entity by
+     * @param world     The world instance to verify that the transform leads to a valid cell
+     */
+    public void move(Transform transform, World world) {
+        WorldCoordinate newCoordinate = location.addTransform(transform);
+        Cell targetCell = world.getCell(newCoordinate);
+
+        if (targetCell.isBlocking()) {
+            // If the move is not valid, do not perform it
+            logger.warn("Invalid move attempted");
+        } else {
+            // If it is valid, change the player's coordinates
+            location = newCoordinate;
+
+            // Increment the move counter
+            moveCounter++;
+
+            if (moveCounter >= Config.getInt("iPlayerSaveFrequency")) {
+                moveCounter = 0;
+                CaveGame.game.savePlayer();
+            }
+
+            afterMove(newCoordinate, world);
+        }
+    }
+
+    /**
+     * Get the current world coordinate of the Entity
+     *
+     * @return The entity's world coordinates
+     */
+    public WorldCoordinate getLocation() {
+        return location;
     }
 
     public String toString() {

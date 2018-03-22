@@ -4,6 +4,8 @@ import com.freddyheppell.cavegame.CaveGame;
 import com.freddyheppell.cavegame.config.Config;
 import com.freddyheppell.cavegame.save.SaveManager;
 import com.freddyheppell.cavegame.world.coord.RegionCoordinate;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.util.HashMap;
@@ -19,7 +21,7 @@ public class RegionManager {
     private LinkedHashMap<RegionCoordinate, Region> regionCache = new LinkedHashMap<RegionCoordinate, Region>() {
         @Override
         protected boolean removeEldestEntry(Map.Entry eldest) {
-            return size() > Config.REGION_CACHE_SIZE;
+            return size() > Config.getInt("iRegionCacheSize");
         }
     };
 
@@ -93,17 +95,20 @@ public class RegionManager {
 
     private Region createRegion(RegionCoordinate regionCoordinate) {
         // The Region needs to be created
-        Region region = new Region(seedManager.getRegionSeed(regionCoordinate));
+        Region region = new Region(seedManager.getRegionSeed(regionCoordinate), regionCoordinate);
         // Populate the region with random cells
         region.populateRandomly();
 
         // Perform the required iterations
-        for (int i = 0; i < Config.ITERATION_COUNT; i++) {
+        for (int i = 0; i < Config.getInt("iRegionIterationCount"); i++) {
             region.iteration();
         }
 
         // Add chests randomly
         region.generateChests();
+
+        // Add entities
+        region.generateEntities();
 
         try {
             // Attempt to save the region to disk

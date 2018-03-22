@@ -2,36 +2,45 @@ package com.freddyheppell.cavegame.world;
 
 import com.freddyheppell.cavegame.config.Config;
 import com.freddyheppell.cavegame.entities.Entity;
+import com.freddyheppell.cavegame.entities.Monster;
 import com.freddyheppell.cavegame.world.cells.*;
 import com.freddyheppell.cavegame.world.coord.CellCoordinate;
+import com.freddyheppell.cavegame.world.coord.RegionCoordinate;
 import com.freddyheppell.cavegame.world.coord.WorldCoordinate;
 import com.freddyheppell.cavegame.world.coord.CoordinateProperties;
+import javafx.collections.ArrayChangeListener;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Random;
 
 public class Region {
-    private Cell[][] cells = new Cell[Config.REGION_SIZE][Config.REGION_SIZE];
+    private Cell[][] cells = new Cell[Config.getInt("iRegionSize")][Config.getInt("iRegionSize")];
+    private RegionCoordinate regionCoordinate;
     private Random random;
-    private HashMap<CellCoordinate, Entity> entities = new HashMap<>();
 
-    public Region(long seed) {
+    // Due to serialisation constraints, the entities in the region must be stored as two lists
+    private ArrayList<WorldCoordinate> entityCoordinates = new ArrayList<>();
+    private ArrayList<Entity> entities = new ArrayList<>();
+
+    public Region(long seed, RegionCoordinate regionCoordinate) {
         random = new Random(seed);
+        this.regionCoordinate = regionCoordinate;
     }
 
     /**
      * Fill the grid with rocks and floor randomly
      */
     public void populateRandomly() {
-        for (int x = 0; x < Config.REGION_SIZE; x++) {
+        for (int x = 0; x < Config.getInt("iRegionSize"); x++) {
 
-            cells[x] = new Cell[Config.REGION_SIZE];
+            cells[x] = new Cell[Config.getInt("iRegionSize")];
 
             for (int y = 0; y < cells[x].length; y++) {
                 float randomValue = random.nextFloat();
 
-                if (randomValue < Config.RANDOM_BOUNDARY) {
+                if (randomValue < Config.getFloat("fRandomBoundary")) {
                     cells[x][y] = new FloorCell();
                 } else {
                     cells[x][y] = new RockCell();
@@ -41,17 +50,28 @@ public class Region {
     }
 
     public void generateChests() {
-        for (int x = 0; x < Config.REGION_SIZE; x++) {
-            for (int y = 0; y < Config.REGION_SIZE; y++) {
+        for (int x = 0; x < Config.getInt("iRegionSize"); x++) {
+            for (int y = 0; y < Config.getInt("iRegionSize"); y++) {
                 float randomValue = random.nextFloat();
 
-                if ((randomValue > Config.CHEST_SPAWN_BOUNDARY) && (cells[x][y].getClass() == FloorCell.class)) {
+                if ((randomValue > Config.getFloat("fChestSpawnBoundary")) && (cells[x][y].getClass() == FloorCell.class)) {
                     ChestCell chestCell = new ChestCell();
                     chestCell.generate();
                     cells[x][y] = chestCell;
                 }
             }
         }
+    }
+
+    public void generateEntities() {
+        int pos = Config.getInt("iRegionSize") / 2;
+
+        CellCoordinate cellCoordinate = new CellCoordinate(pos, pos);
+        WorldCoordinate worldCoordinate = WorldCoordinate.fromRegionAndCell(regionCoordinate, cellCoordinate);
+        Entity entity = new Monster(worldCoordinate);
+
+        entityCoordinates.add(worldCoordinate);
+        entities.add(entity);
     }
 
     /**
@@ -61,14 +81,14 @@ public class Region {
      * @return The Cell at those coordinates
      */
     public Cell getCellIfExists(WorldCoordinate worldCoordinate) {
-        if (worldCoordinate.cx > Config.REGION_SIZE - 1 ||
-                worldCoordinate.cy > Config.REGION_SIZE - 1 ||
+        if (worldCoordinate.cx > Config.getInt("iRegionSize") - 1 ||
+                worldCoordinate.cy > Config.getInt("iRegionSize") - 1 ||
                 worldCoordinate.cx < 0 ||
                 worldCoordinate.cy < 0) {
             return new EmptyCell();
+        } else {
+            return cells[worldCoordinate.cx][worldCoordinate.cy];
         }
-
-        return cells[worldCoordinate.cx][worldCoordinate.cy];
     }
 
     /**
@@ -111,7 +131,7 @@ public class Region {
      */
     public void iteration() {
         // Iterations should be applied simultaneously, so modifications are placed onto a new grid
-        Cell[][] nextCells = new Cell[Config.REGION_SIZE][Config.REGION_SIZE];
+        Cell[][] nextCells = new Cell[Config.getInt("iRegionSize")][Config.getInt("iRegionSize")];
 
         for (int x = 0; x < cells.length; x++) {
             Arrays.fill(nextCells[x], new EmptyCell());
@@ -120,7 +140,7 @@ public class Region {
                 Cell[] neighbours = getMooreNeighbourhood(new WorldCoordinate(x, y));
                 int count = countMatchingCells(neighbours, RockCell.class);
 
-                if (count >= Config.CELL_DEATH_THRESHOLD) {
+                if (count >= Config.getInt("iCellDeathThreshold")) {
                     // If the count is higher than the threshold, the cell will become rock
                     nextCells[x][y] = new RockCell();
                 } else {

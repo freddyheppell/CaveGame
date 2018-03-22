@@ -19,13 +19,13 @@ public class WorldCoordinate {
 
         // Find the region that (wx, wy) is in
         // floorDiv divides, finds the floor and casts to an integer
-        this.rx = Math.floorDiv(wx, Config.REGION_SIZE);
-        this.ry = Math.floorDiv(wy, Config.REGION_SIZE);
+        this.rx = Math.floorDiv(wx, Config.getInt("iRegionSize"));
+        this.ry = Math.floorDiv(wy, Config.getInt("iRegionSize"));
 
         // Find the coordinates within that region
         // floorMod is required for negative coordinates to work
-        this.cx = Math.floorMod(wx, Config.REGION_SIZE);
-        this.cy = Math.floorMod(wy, Config.REGION_SIZE);
+        this.cx = Math.floorMod(wx, Config.getInt("iRegionSize"));
+        this.cy = Math.floorMod(wy, Config.getInt("iRegionSize"));
     }
 
     public static WorldCoordinate origin() {
@@ -43,6 +43,14 @@ public class WorldCoordinate {
         int newY = wy + transform.dy;
 
         return new WorldCoordinate(newX, newY);
+    }
+
+    public WorldCoordinate add(CellCoordinate cellCoordinate) {
+        return new WorldCoordinate(this.wx + cellCoordinate.cx, this.wy + cellCoordinate.cy);
+    }
+
+    public static WorldCoordinate fromRegionAndCell(RegionCoordinate regionCoordinate, CellCoordinate cellCoordinate) {
+        return regionCoordinate.getCornerWorldCoordinate().add(cellCoordinate);
     }
 
     /**

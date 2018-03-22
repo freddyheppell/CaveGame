@@ -55,6 +55,7 @@ public class ChestCell extends Cell {
             claimed = true;
 
             CaveGame.game.world.getRegionManager().resaveRegion(regionCoordinate);
+            CaveGame.game.savePlayer();
         }
     }
 
@@ -66,7 +67,7 @@ public class ChestCell extends Cell {
 
         // This prevents 0 from being generated
         // nextInt generates from 0 to n, we want 1 to n. By generating from 0 to (n-1) and adding 1, we get from 1 to n
-        int itemCount = random.nextInt(Config.CHEST_MAX_ITEMS - 1) + 1;
+        int itemCount = random.nextInt(Config.getInt("iChestMaxItems") - 1) + 1;
 
         for (int i = 0; i < itemCount; i++) {
             // Now pick itemCount number of items

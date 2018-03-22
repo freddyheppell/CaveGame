@@ -1,17 +1,22 @@
 package com.freddyheppell.cavegame.save;
 
+import com.freddyheppell.cavegame.entities.Player;
 import com.freddyheppell.cavegame.items.Item;
 import com.freddyheppell.cavegame.items.ItemRegistry;
+import com.freddyheppell.cavegame.utility.Console;
 import com.freddyheppell.cavegame.world.Region;
 import com.freddyheppell.cavegame.world.cells.*;
 import com.freddyheppell.cavegame.world.coord.RegionCoordinate;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 
 public class SaveManager {
+    private static final Logger logger = LogManager.getLogger();
 
     /**
      * An instance of the Runtime Adapter Factory for the Cell class, which allows Gson to correctly serialise
@@ -25,6 +30,8 @@ public class SaveManager {
             .registerSubtype(ChestCell.class, "c");
 
     private static final RuntimeTypeAdapterFactory<Item> ITEM_ADAPTER_FACTORY = ItemRegistry.getInstance().getItemAdapterFactory();
+
+    private static final String PLAYER_FILE_NAME = "player.json";
 
     /**
      * Get the file name of a region at the given coordinates
@@ -41,24 +48,21 @@ public class SaveManager {
      *
      * @return The path as a string
      */
-    private static String getSavePath() {
-        String os = System.getProperty("os.name").toUpperCase();
-        String path;
+    public static String getSavePath() {
+        Console.OperatingSystem operatingSystem = Console.getOperatingSystem();
 
-        if (os.contains("WINDOWS")) {
-            System.out.println("Windows");
-            path = System.getenv("APPDATA") + "\\CaveGame";
-        } else if (os.contains("MAC")) {
-            System.out.println("Mac");
-            path = System.getProperty("user.home") + "/Library/Application Support/CaveGame";
-        } else if (os.contains("NUX")) {
-            System.out.println("Linux");
-            path = System.getProperty("user.dir") + ".CaveGame";
-        } else {
-            path = "CaveGame";
+        switch (operatingSystem) {
+            case WINDOWS:
+                return System.getenv("APPDATA") + "\\CaveGame";
+            case MAC:
+                return System.getProperty("user.home") + "/Library/Application Support/CaveGame";
+            case LINUX:
+                return System.getProperty("user.dir") + ".CaveGame";
+            case UNKNOWN:
+                return "CaveGame";
+            default:
+                return "CaveGame";
         }
-
-        return path;
     }
 
     /**
@@ -101,17 +105,16 @@ public class SaveManager {
         return new File(saveDir, regionFileName(regionCoordinate));
     }
 
-
     /**
-     * Get a FileReader for a region file
+     * Get the File representation of the location of the player file
      *
-     * @param regionFile The File instance for the region file
-     * @return The FileReader
-     * @throws FileNotFoundException If the file is not valid
+     * @param saveDir The File representation of the save directory
+     * @return A File representation of the player file
      */
-    public static FileReader getRegionReader(File regionFile) throws FileNotFoundException {
-        return new FileReader(regionFile);
+    public static File getPlayerFile(File saveDir) {
+        return new File(saveDir, PLAYER_FILE_NAME);
     }
+
 
     /**
      * Save a region to disk
@@ -123,11 +126,11 @@ public class SaveManager {
     public static void saveRegion(Region region, File saveLocation) throws IOException {
         Gson gson = new GsonBuilder().registerTypeAdapterFactory(CELL_ADAPTER_FACTORY)
                 .registerTypeAdapterFactory(ITEM_ADAPTER_FACTORY).create();
-        System.out.println("STARTING SAVE");
+        logger.info("Starting region save");
         Writer writer = new FileWriter(saveLocation, false);
         gson.toJson(region, writer);
         writer.close();
-        System.out.println("ENDING SAVE");
+        logger.info("Region save completed");
     }
 
     /**
@@ -139,10 +142,44 @@ public class SaveManager {
      * @throws FileNotFoundException If the file could not be found
      */
     public static Region loadRegion(File saveDir, RegionCoordinate regionCoordinate) throws FileNotFoundException {
-        System.out.println(regionCoordinate);
-        FileReader regionReader = SaveManager.getRegionReader(SaveManager.getRegionFile(saveDir, regionCoordinate));
+        logger.info("Loading region from disk {}", regionCoordinate.toString());
+        FileReader regionReader = new FileReader(SaveManager.getRegionFile(saveDir, regionCoordinate));
         Gson gson = new GsonBuilder().registerTypeAdapterFactory(CELL_ADAPTER_FACTORY)
                 .registerTypeAdapterFactory(ITEM_ADAPTER_FACTORY).create();
-        return gson.fromJson(new BufferedReader(regionReader), Region.class);
+        Region region = gson.fromJson(new BufferedReader(regionReader), Region.class);
+        logger.info("Loaded region {}", regionCoordinate.toString());
+        return region;
+    }
+
+    /**
+     * Save the player file
+     *
+     * @param saveLocation The folder to store the player file in
+     * @param player       The current instance of the player
+     * @throws IOException If an error is encountered saving the file
+     */
+    public static void savePlayer(File saveLocation, Player player) throws IOException {
+        Gson gson = new GsonBuilder().registerTypeAdapterFactory(ITEM_ADAPTER_FACTORY).create();
+        logger.info("Saving player");
+        Writer writer = new FileWriter(getPlayerFile(saveLocation), false);
+        gson.toJson(player, writer);
+        writer.close();
+        logger.info("Player saved");
+    }
+
+    /**
+     * Load the player from disk
+     *
+     * @param saveDir The directory the player is located in
+     * @return The Player instance
+     * @throws FileNotFoundException If the player file does not exist
+     */
+    public static Player loadPlayer(File saveDir) throws FileNotFoundException {
+        logger.info("Saving player");
+        FileReader playerReader = new FileReader(getPlayerFile(saveDir));
+        Gson gson = new GsonBuilder().registerTypeAdapterFactory(ITEM_ADAPTER_FACTORY).create();
+        Player player = gson.fromJson(new BufferedReader(playerReader), Player.class);
+        logger.info("Player saved");
+        return player;
     }
 }
