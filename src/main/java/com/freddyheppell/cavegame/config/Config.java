@@ -4,10 +4,8 @@ import com.freddyheppell.cavegame.save.SaveManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.nio.file.StandardCopyOption;
 import java.util.Properties;
 
 /**
@@ -30,7 +28,24 @@ public class Config {
         logger.info("Default configuration loaded, containing {} properties", properties.size());
 
         File overrideFile = new File(SaveManager.getSavePath(), "CaveGame.properties");
-        if (overrideFile.exists()) {
+        if (!overrideFile.exists()) {
+            SaveManager.checkSaveFolder(new File(SaveManager.getSavePath()));
+            if (!overrideFile.createNewFile()) {
+                logger.error("Unable to create override file template");
+                return;
+            }
+
+            logger.info("Copying override file template");
+            InputStream inOverride = Config.class.getClassLoader().getResourceAsStream("CaveGame.properties");
+
+            java.nio.file.Files.copy(
+                    inOverride,
+                    overrideFile.toPath(),
+                    StandardCopyOption.REPLACE_EXISTING);
+
+            inOverride.close();
+
+        } else if (overrideFile.exists()) {
             logger.info("An override file exists, loading it");
             InputStream inOverride = new FileInputStream(overrideFile);
             properties.load(inOverride);
