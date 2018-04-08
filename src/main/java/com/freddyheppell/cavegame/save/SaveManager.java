@@ -1,5 +1,7 @@
 package com.freddyheppell.cavegame.save;
 
+import com.freddyheppell.cavegame.entities.Entity;
+import com.freddyheppell.cavegame.entities.Monster;
 import com.freddyheppell.cavegame.entities.Player;
 import com.freddyheppell.cavegame.items.Item;
 import com.freddyheppell.cavegame.items.ItemRegistry;
@@ -30,6 +32,10 @@ public class SaveManager {
             .registerSubtype(ChestCell.class, "c");
 
     private static final RuntimeTypeAdapterFactory<Item> ITEM_ADAPTER_FACTORY = ItemRegistry.getInstance().getItemAdapterFactory();
+
+    private static final RuntimeTypeAdapterFactory<Entity> ENTITY_ADAPTER_FACTORY = RuntimeTypeAdapterFactory
+            .of(Entity.class, "t")
+            .registerSubtype(Monster.class, "m");
 
     private static final String PLAYER_FILE_NAME = "player.json";
 
@@ -71,7 +77,7 @@ public class SaveManager {
      * @param directory The directory to be checked
      * @return If the operation was successful
      */
-    private static boolean checkSaveFolder(File directory) {
+    public static boolean checkSaveFolder(File directory) {
         return directory.exists() || directory.mkdir();
     }
 
@@ -124,8 +130,11 @@ public class SaveManager {
      * @throws IOException If the file was unable to be saved
      */
     public static void saveRegion(Region region, File saveLocation) throws IOException {
-        Gson gson = new GsonBuilder().registerTypeAdapterFactory(CELL_ADAPTER_FACTORY)
-                .registerTypeAdapterFactory(ITEM_ADAPTER_FACTORY).create();
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapterFactory(CELL_ADAPTER_FACTORY)
+                .registerTypeAdapterFactory(ITEM_ADAPTER_FACTORY)
+                .registerTypeAdapterFactory(ENTITY_ADAPTER_FACTORY)
+                .create();
         logger.info("Starting region save");
         Writer writer = new FileWriter(saveLocation, false);
         gson.toJson(region, writer);
@@ -144,8 +153,11 @@ public class SaveManager {
     public static Region loadRegion(File saveDir, RegionCoordinate regionCoordinate) throws FileNotFoundException {
         logger.info("Loading region from disk {}", regionCoordinate.toString());
         FileReader regionReader = new FileReader(SaveManager.getRegionFile(saveDir, regionCoordinate));
-        Gson gson = new GsonBuilder().registerTypeAdapterFactory(CELL_ADAPTER_FACTORY)
-                .registerTypeAdapterFactory(ITEM_ADAPTER_FACTORY).create();
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapterFactory(CELL_ADAPTER_FACTORY)
+                .registerTypeAdapterFactory(ITEM_ADAPTER_FACTORY)
+                .registerTypeAdapterFactory(ENTITY_ADAPTER_FACTORY)
+                .create();
         Region region = gson.fromJson(new BufferedReader(regionReader), Region.class);
         logger.info("Loaded region {}", regionCoordinate.toString());
         return region;

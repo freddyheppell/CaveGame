@@ -18,4 +18,10 @@ public class Monster extends Entity implements AIEntity {
     public void onAttackZoneEnter(Player player) {
 
     }
+
+    @Override
+    public String toString() {
+        System.out.println("Outputting monster");
+        return "M";
+    }
 }

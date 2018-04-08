@@ -7,15 +7,19 @@ import com.freddyheppell.cavegame.items.ItemRegistry;
 import com.freddyheppell.cavegame.save.SaveManager;
 import com.freddyheppell.cavegame.utility.Console;
 import com.freddyheppell.cavegame.world.OutputFrame;
+import com.freddyheppell.cavegame.world.RegionManager;
 import com.freddyheppell.cavegame.world.SeedManager;
 import com.freddyheppell.cavegame.world.World;
 import com.freddyheppell.cavegame.world.coord.CoordinateProperties;
+import com.freddyheppell.cavegame.world.coord.RegionCoordinate;
+import com.freddyheppell.cavegame.world.coord.WorldCoordinate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
 public class Game {
@@ -26,23 +30,33 @@ public class Game {
 
     private static final Logger logger = LogManager.getLogger();
 
-    public Game() throws IOException {
+    public Game() {
         ItemRegistry.getInstance().doRegister();
         this.seedManager = new SeedManager(Config.getString("sWorldSeed"));
         this.world = new World(seedManager);
-        this.gameName = "Test";
 
-        // Loading Player
-        File saveDir = SaveManager.getSaveFolder(gameName);
-        if (SaveManager.getPlayerFile(saveDir).exists()) {
-            this.player = SaveManager.loadPlayer(saveDir);
-        } else {
-            this.player = new Player(world.getSpawnLocation());
-            SaveManager.savePlayer(saveDir, player);
-        }
+        System.out.println("CaveGame Temporary Main Menu");
+        System.out.println("Enter the name of the world to create or load");
+        Scanner scanner = new Scanner(System.in);
+        System.out.print(">");
+        this.gameName = scanner.nextLine();
 
         logger.info("Screen size detected as: {} height, {} width", Console.getHeight(), Console.getWidth());
 
+    }
+
+    public void initPlayer() throws IOException {
+        // Loading Player
+        File saveDir = SaveManager.getSaveFolder(gameName);
+        if (SaveManager.getPlayerFile(saveDir).exists()) {
+            // The player file already exists, load it
+            this.player = SaveManager.loadPlayer(saveDir);
+        } else {
+            // There is no player file, make one
+            this.player = new Player(world.getSpawnLocation());
+            // ... and save it
+            SaveManager.savePlayer(saveDir, player);
+        }
     }
 
     public void savePlayer() {
@@ -60,6 +74,15 @@ public class Game {
         return world;
     }
 
+    /**
+     * Register an entity activation event
+     *
+     * @param triggerSource The entity that must be alerted
+     * @param triggerLocation The cell that causes the trigger
+     */
+    public void registerEvent(WorldCoordinate triggerSource, WorldCoordinate triggerLocation) {
+        world.getRegion(triggerLocation.getRegionCoordinate()).registerEvent(triggerSource, triggerLocation);
+    }
 
     public void gameLoop() throws IOException {
         OutputFrame outputFrame = new OutputFrame(world, player);
@@ -94,7 +117,7 @@ public class Game {
 
 
         try {
-            TimeUnit.SECONDS.sleep(Config.getLong("lFrameSleepTime"));
+            Thread.sleep((long)Config.getFloat("fFrameSleepTime") * 1000);
         } catch (InterruptedException e) {
             throw new RuntimeException("Interrupted during frame sleep");
         }

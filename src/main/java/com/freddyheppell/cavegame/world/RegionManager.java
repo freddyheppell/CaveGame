@@ -29,6 +29,7 @@ public class RegionManager {
      * The directory in which to put savedata
      */
     private File saveDir;
+
     /**
      * The game's SeedManager
      */
@@ -88,8 +89,15 @@ public class RegionManager {
             return loadRegion(saveDir, regionCoordinate);
 
         } else {
-            return createRegion(regionCoordinate);
+            // This is a new region
+            // Create it...
+            Region region = createRegion(regionCoordinate);
+            // Add entities
+            region.generateEntities();
+            // Now resave
+            resaveRegion(regionCoordinate, region);
 
+            return region;
         }
     }
 
@@ -107,9 +115,6 @@ public class RegionManager {
         // Add chests randomly
         region.generateChests();
 
-        // Add entities
-        region.generateEntities();
-
         try {
             // Attempt to save the region to disk
             SaveManager.saveRegion(region, SaveManager.getRegionFile(saveDir, regionCoordinate));
@@ -123,14 +128,18 @@ public class RegionManager {
         }
     }
 
-    public void resaveRegion(RegionCoordinate regionCoordinate) {
-        Region region = CaveGame.game.getWorld().getRegion(regionCoordinate);
-
+    public void resaveRegion(RegionCoordinate regionCoordinate, Region region) {
         try {
             SaveManager.saveRegion(region, SaveManager.getRegionFile(saveDir, regionCoordinate));
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException("Unable to resave file");
         }
+    }
+
+    public void resaveRegion(RegionCoordinate regionCoordinate) {
+        Region region = CaveGame.game.getWorld().getRegion(regionCoordinate);
+
+        resaveRegion(regionCoordinate, region);
     }
 }

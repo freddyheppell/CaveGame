@@ -9,12 +9,6 @@ import java.util.Scanner;
 
 public class Console {
     /**
-     * If the computer is running Windows
-     * The OS name of all versions of Windows will begin with "Windows"
-     */
-    private static final boolean isWindows = System.getProperty("os.name").startsWith("Windows");
-
-    /**
      * String to clear screen on *nix systems (mac OS/Linux etc.)
      * First character clears screen, second returns cursor to beginning of screen
      */
@@ -23,6 +17,11 @@ public class Console {
     public enum OperatingSystem {WINDOWS, MAC, LINUX, UNKNOWN}
     private static OperatingSystem operatingSystem;
 
+    /**
+     * Get the user's operating system
+     *
+     * @return OperatingSystem enum of the user's OS
+     */
     public static OperatingSystem getOperatingSystem() {
         String os = System.getProperty("os.name").toUpperCase();
 
@@ -41,6 +40,9 @@ public class Console {
         return operatingSystem;
     }
 
+    /**
+     * Clear the screen using the correct method for this OS
+     */
     public static void clearScreen() {
         if (!Config.getBoolean("bShouldClearScreen")) {
             // If screen clearing is disabled in the configuration,
@@ -48,7 +50,7 @@ public class Console {
             return;
         }
 
-        if (isWindows) {
+        if (getOperatingSystem() == OperatingSystem.WINDOWS) {
             // On windows, run `cls` in the command prompt
             try {
                 new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
@@ -62,12 +64,20 @@ public class Console {
         }
     }
 
+    /**
+     * Read an single character from Stdin
+     *
+     * @return The integer representation of the character
+     */
     public static int readInput() {
         Scanner sc = new Scanner(System.in);
 
         return sc.next().charAt(0);
     }
 
+    /**
+     * @return The instance of the terminal
+     */
     private static Terminal getTerminal() {
         try {
             return TerminalBuilder.builder().build();
@@ -76,13 +86,23 @@ public class Console {
         }
     }
 
+    /**
+     * Get the usable width of the terminal
+     *
+     * @return The usable width of the terminal
+     */
     public static int getWidth() {
         // This number of cells appears to the left and right of the player (divide by 2)
         // and each cell consists of 3 characters (divide by 3). Therefore divide by 6.
-        // In some cases one character overflows, so subtract 1 to be safe
+        // Some terminals will round up partial character widths, so subtract 1 to be safe
         return Math.floorDiv(getTerminal().getWidth() - 1, 6) - 1;
     }
 
+    /**
+     * Get the usable height of the terminal
+     *
+     * @return The usable width of the terminal
+     */
     public static int getHeight() {
         // This number of cells appears above and below the player (divide by 2)
         // Subtract two lines for the input prompt and the line created upon pressing enter

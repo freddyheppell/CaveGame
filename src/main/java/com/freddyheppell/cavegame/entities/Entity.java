@@ -1,5 +1,6 @@
 package com.freddyheppell.cavegame.entities;
 
+import com.freddyheppell.cavegame.CaveGame;
 import com.freddyheppell.cavegame.world.World;
 import com.freddyheppell.cavegame.world.cells.Cell;
 import com.freddyheppell.cavegame.world.coord.Transform;
@@ -9,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Entity {
-    protected List<WorldCoordinate> visibleCells;
+    protected transient List<WorldCoordinate> visibleCells;
 
     /**
      * The Entity class should not be directly instantiated
@@ -23,52 +24,39 @@ public class Entity {
      * @return The radial view distance
      */
     public int getViewDistance() {
-        return 0;
+        return 3;
     }
 
     /**
      * Get the cells that are visible to the entity
      */
     public void calculateVisibleCells(WorldCoordinate location) {
-        ArrayList<WorldCoordinate> visibleCells = new ArrayList<>();
+        this.visibleCells = new ArrayList<>();
         int r = getViewDistance();
-        // a is the decision variable
-        int a = 1 - r;
-        int dx = 1;
-        int dy = -2 * r;
-        int x = 0;
-        int y = r;
+        int rSq = r*r;
+        float correction = r * 0.8f;
+        float limit = rSq + correction;
 
-        // Add the point at the top of the circle
-        visibleCells.add(new WorldCoordinate(location.wx, location.wy + r));
-        // ... and the other points at the right, bottom and left.
-        visibleCells.add(new WorldCoordinate(location.wx, location.wy - r));
-        visibleCells.add(new WorldCoordinate(location.wx + r, location.wy));
-        visibleCells.add(new WorldCoordinate(location.wx - r, location.wy));
-
-        // Bresenham's Circle Algorithm
-        // Used to rasterise a circle onto the coordinate grid
-        while (x < y) {
-            if (a >= 0) {
-                y -= 1;
-                dy += 2;
-                a += dy;
+        for (int y = (-r + location.wy); y <= (r + location.wy); y++) {
+            for (int x = (-r + location.wx); x <= (r + location.wy); x++) {
+                if ((x*x) + (y*y) <= limit) {
+                    visibleCells.add(new WorldCoordinate(x, y));
+                }
             }
+        }
 
-            x += 1;
-            dx += 2;
-            a += dx;
+        registerVisibleCells(location);
+    }
 
-            // Add the corresponding points in all eight octants
-            visibleCells.add(new WorldCoordinate(location.wx + x, location.wy + y));
-            visibleCells.add(new WorldCoordinate(location.wx - x, location.wy + y));
-            visibleCells.add(new WorldCoordinate(location.wx + x, location.wy - y));
-            visibleCells.add(new WorldCoordinate(location.wx - x, location.wy - y));
-            visibleCells.add(new WorldCoordinate(location.wx + y, location.wy + x));
-            visibleCells.add(new WorldCoordinate(location.wx - y, location.wy + x));
-            visibleCells.add(new WorldCoordinate(location.wx + y, location.wy - x));
-            visibleCells.add(new WorldCoordinate(location.wx - y, location.wy - x));
-
+    /**
+     * Register events for the visible cells
+     *
+     * @param location The location of this entity
+     */
+    private void registerVisibleCells(WorldCoordinate location) {
+        for (WorldCoordinate visibleCell:
+             visibleCells) {
+            CaveGame.game.registerEvent(location, visibleCell);
         }
     }
 

@@ -5,6 +5,7 @@ import com.freddyheppell.cavegame.config.Config;
 import com.freddyheppell.cavegame.items.Item;
 import com.freddyheppell.cavegame.save.SaveManager;
 import com.freddyheppell.cavegame.utility.Console;
+import com.freddyheppell.cavegame.world.Region;
 import com.freddyheppell.cavegame.world.World;
 import com.freddyheppell.cavegame.world.cells.Cell;
 import com.freddyheppell.cavegame.world.coord.Transform;
@@ -17,6 +18,11 @@ import java.util.List;
 
 public class Player extends Entity {
     private ArrayList<Item> inventory = new ArrayList<>();
+
+    // The indexes of the equipped weapon and armor
+    private int iEquippedWeapon;
+    private int iEquippedArmor;
+
     private WorldCoordinate location;
     private transient int moveCounter = 0;
     private static final Logger logger = LogManager.getLogger();
@@ -89,6 +95,21 @@ public class Player extends Entity {
      */
     @Override
     public void afterMove(WorldCoordinate newCoordinate, World world) {
+        if (world.getRegion(newCoordinate.getRegionCoordinate()).hasEventForCoordinate(newCoordinate)) {
+            // An entity somewhere has requested that they be alerted when a user enters this cell
+            // First find the coordinates of that entity
+            WorldCoordinate triggerCoordinate = world.getRegion(newCoordinate.getRegionCoordinate()).getEventForCoordinate(newCoordinate);
+
+            // Check if the player has LoS to the entity
+            if (world.hasLineOfSight(newCoordinate, triggerCoordinate)) {
+                // If it does, begin combat
+                Entity entity = world.getRegion(triggerCoordinate.getRegionCoordinate()).getEntityAt(triggerCoordinate);
+                CombatManager combatManager = new CombatManager(this, entity);
+
+            }
+        }
+
+        // Alert the cell that the player has entered the cell
         world.getCell(newCoordinate).onEnter(this, newCoordinate.getRegionCoordinate());
     }
 

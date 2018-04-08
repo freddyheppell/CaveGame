@@ -8,11 +8,9 @@ import com.freddyheppell.cavegame.world.coord.CellCoordinate;
 import com.freddyheppell.cavegame.world.coord.RegionCoordinate;
 import com.freddyheppell.cavegame.world.coord.WorldCoordinate;
 import com.freddyheppell.cavegame.world.coord.CoordinateProperties;
-import javafx.collections.ArrayChangeListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Random;
 
 public class Region {
@@ -21,8 +19,15 @@ public class Region {
     private Random random;
 
     // Due to serialisation constraints, the entities in the region must be stored as two lists
+    // These variables are treated as a hashmap
     private ArrayList<WorldCoordinate> entityCoordinates = new ArrayList<>();
     private ArrayList<Entity> entities = new ArrayList<>();
+
+    // A list of events added for this region.
+    // 'locations' are the cells that activate the event
+    // 'sources' are the entity that has requested the event
+    private ArrayList<WorldCoordinate> triggerLocations = new ArrayList<>();
+    private ArrayList<WorldCoordinate> triggerSources = new ArrayList<>();
 
     public Region(long seed, RegionCoordinate regionCoordinate) {
         random = new Random(seed);
@@ -64,14 +69,32 @@ public class Region {
     }
 
     public void generateEntities() {
-        int pos = Config.getInt("iRegionSize") / 2;
+        System.out.println("Generating entities");
 
-        CellCoordinate cellCoordinate = new CellCoordinate(pos, pos);
-        WorldCoordinate worldCoordinate = WorldCoordinate.fromRegionAndCell(regionCoordinate, cellCoordinate);
-        Entity entity = new Monster(worldCoordinate);
+        WorldCoordinate entitySpawnCell = getEntitySpawnCell();
 
-        entityCoordinates.add(worldCoordinate);
-        entities.add(entity);
+        if (entitySpawnCell != null) {
+            Entity entity = new Monster(entitySpawnCell);
+
+            entityCoordinates.add(entitySpawnCell);
+            System.out.println(entityCoordinates.size());
+            entities.add(entity);
+        }
+    }
+
+    public WorldCoordinate getEntitySpawnCell() {
+        boolean found = false;
+        while (!found) {
+            int x = random.nextInt(Config.getInt("iRegionSize"));
+            int y = random.nextInt(Config.getInt("iRegionSize"));
+
+            if (!cells[x][y].isBlocking()) {
+                CellCoordinate cellCoordinate = new CellCoordinate(x, y);
+                return WorldCoordinate.fromRegionAndCell(regionCoordinate, cellCoordinate);
+            }
+        }
+        // If one can't be found, just return null
+        return null;
     }
 
     /**
@@ -156,6 +179,33 @@ public class Region {
 
     public Cell[][] getCells() {
         return cells;
+    }
+
+    /**
+     * Register an entity activation event
+     *
+     * @param triggerSource   The entity that must be alerted
+     * @param triggerLocation The cell that causes the trigger
+     */
+    public void registerEvent(WorldCoordinate triggerSource, WorldCoordinate triggerLocation) {
+        triggerSources.add(triggerSource);
+        triggerLocations.add(triggerLocation);
+    }
+
+    public boolean hasEventForCoordinate(WorldCoordinate worldCoordinate) {
+        return triggerLocations.contains(worldCoordinate);
+    }
+
+    public WorldCoordinate getEventForCoordinate(WorldCoordinate worldCoordinate) {
+        return triggerSources.get(triggerLocations.indexOf(worldCoordinate));
+    }
+
+    public boolean isEntityAt(WorldCoordinate worldCoordinate) {
+        return entityCoordinates.contains(worldCoordinate);
+    }
+
+    public Entity getEntityAt(WorldCoordinate worldCoordinate) {
+        return entities.get(entityCoordinates.indexOf(worldCoordinate));
     }
 
     /**

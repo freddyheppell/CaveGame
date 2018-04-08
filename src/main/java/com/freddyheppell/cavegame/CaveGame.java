@@ -20,13 +20,14 @@ public class CaveGame {
     }
 
     public static void main(String[] args) {
-        while (true) {
-            try {
+        try {
+            game.initPlayer();
+            while (true) {
                 game.gameLoop();
-            } catch (IOException e) {
-                e.printStackTrace();
-                throw new RuntimeException("Error getting input");
             }
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error getting input");
         }
     }
 }

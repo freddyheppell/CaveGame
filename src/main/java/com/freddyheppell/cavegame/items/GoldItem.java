@@ -2,9 +2,7 @@ package com.freddyheppell.cavegame.items;
 
 import java.util.Random;
 
-/**
- * Represents an amount of gold to be added to the player's current value
- */
+// Overridden methods are documented in the parent class
 public class GoldItem extends Item {
 
     /**

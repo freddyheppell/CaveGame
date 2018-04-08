@@ -17,6 +17,11 @@ public class Config {
     private static final Logger logger = LogManager.getLogger();
 
 
+    /**
+     * Load the main and override config file
+     *
+     * @throws IOException If the override file could not be copied correctly
+     */
     public static void loadConfiguration() throws IOException {
         logger.info("Loading default configuration");
         InputStream inDefault = Config.class.getClassLoader().getResourceAsStream("CaveGame.default.properties");
@@ -53,26 +58,62 @@ public class Config {
         }
     }
 
+    /**
+     * Get a string property from configuration
+     *
+     * @param propertyName The name of the property
+     * @return The value of the property
+     */
     public static String getString(String propertyName) {
         return properties.getProperty(propertyName);
     }
 
+    /**
+     * Get a string property from configuration
+     *
+     * @param propertyName The name of the property
+     * @return The value of the property
+     */
     public static int getInt(String propertyName) {
         return Integer.parseInt(getString(propertyName));
     }
 
+    /**
+     * Get a float property from configuration
+     *
+     * @param propertyName The name of the property
+     * @return The value of the property
+     */
     public static float getFloat(String propertyName) {
         return Float.parseFloat(getString(propertyName));
     }
 
+    /**
+     * Get a long property from configuration
+     *
+     * @param propertyName The name of the property
+     * @return The value of the property
+     */
     public static long getLong(String propertyName) {
-        return Long.getLong(getString(propertyName));
+        return Long.parseLong(getString(propertyName));
     }
 
+    /**
+     * Get a char property from configuration
+     *
+     * @param propertyName The name of the property
+     * @return The value of the property
+     */
     public static char getChar(String propertyName) {
         return getString(propertyName).charAt(0);
     }
 
+    /**
+     * Get a boolean property from configuration
+     *
+     * @param propertyName The name of the property
+     * @return The value of the property
+     */
     public static boolean getBoolean(String propertyName) {
         return Boolean.valueOf(getString(propertyName));
     }

@@ -1,5 +1,6 @@
 package com.freddyheppell.cavegame.items;
 
+// Overridden methods are documented in the parent class
 public class ArmourItem extends Item {
     private String tier;
     private int shielding;

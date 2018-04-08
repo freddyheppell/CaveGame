@@ -1,9 +1,11 @@
 package com.freddyheppell.cavegame.items;
 
 public class Item {
-
+    /**
+     * The relative frequency at which this item should be dropped.
+     * This does not need to be serialised so set to transient
+     */
     private transient int dropWeight;
-
 
     /**
      * Item with an unspecified name, to be used with custom display name generators
@@ -18,14 +20,29 @@ public class Item {
         return dropWeight;
     }
 
+    /**
+     * Get the human readable name of this item
+     *
+     * @return String name
+     */
     public String getDisplayName() {
         return "Generic Item";
     }
 
+    /**
+     * Can this item be equipped as a weapon?
+     *
+     * @return Boolean if it can be equipped
+     */
     public boolean isWeapon() {
         return false;
     }
 
+    /**
+     * Can this item be equipped as armour?
+     *
+     * @return Boolean if it can be equipped
+     */
     public boolean isEquippable() {
         return false;
     }

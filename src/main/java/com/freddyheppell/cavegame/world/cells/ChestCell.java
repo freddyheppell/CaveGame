@@ -10,6 +10,7 @@ import com.freddyheppell.cavegame.world.coord.RegionCoordinate;
 import java.util.ArrayList;
 import java.util.Random;
 
+// Overridden methods are documented in the parent class
 public class ChestCell extends Cell {
     /**
      * The items to be given to the player
@@ -19,11 +20,6 @@ public class ChestCell extends Cell {
      * If the chest has been claimed yet or not
      */
     private boolean claimed = false;
-    /**
-     * A reference to the chest's location so it can instruct the save manager to
-     * re-save the region when the chest has been accessed
-     */
-    private String locationHash;
 
     @Override
     public String toString() {
