@@ -33,13 +33,14 @@ public class Game {
     public Game() {
         ItemRegistry.getInstance().doRegister();
         this.seedManager = new SeedManager(Config.getString("sWorldSeed"));
-        this.world = new World(seedManager);
 
         System.out.println("CaveGame Temporary Main Menu");
         System.out.println("Enter the name of the world to create or load");
         Scanner scanner = new Scanner(System.in);
         System.out.print(">");
         this.gameName = scanner.nextLine();
+
+        this.world = new World(seedManager, this.gameName);
 
         logger.info("Screen size detected as: {} height, {} width", Console.getHeight(), Console.getWidth());
 
@@ -81,6 +82,7 @@ public class Game {
      * @param triggerLocation The cell that causes the trigger
      */
     public void registerEvent(WorldCoordinate triggerSource, WorldCoordinate triggerLocation) {
+        logger.debug("Registering event in world");
         world.getRegion(triggerLocation.getRegionCoordinate()).registerEvent(triggerSource, triggerLocation);
     }
 

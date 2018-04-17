@@ -15,8 +15,8 @@ public class World {
     private static final Logger logger = LogManager.getLogger();
 
 
-    public World(SeedManager seedManager) {
-        this.regionManager = new RegionManager("Test", seedManager);
+    public World(SeedManager seedManager, String worldName) {
+        this.regionManager = new RegionManager(worldName, seedManager);
     }
 
 

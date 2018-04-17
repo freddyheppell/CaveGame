@@ -25,4 +25,8 @@ public class SwordItem extends Item {
     public boolean isWeapon() {
         return true;
     }
+
+    public int getDamage() {
+        return damage;
+    }
 }

@@ -2,7 +2,10 @@ package com.freddyheppell.cavegame.entities;
 
 import com.freddyheppell.cavegame.CaveGame;
 import com.freddyheppell.cavegame.config.Config;
+import com.freddyheppell.cavegame.items.ArmourItem;
 import com.freddyheppell.cavegame.items.Item;
+import com.freddyheppell.cavegame.items.ItemRegistry;
+import com.freddyheppell.cavegame.items.SwordItem;
 import com.freddyheppell.cavegame.save.SaveManager;
 import com.freddyheppell.cavegame.utility.Console;
 import com.freddyheppell.cavegame.world.Region;
@@ -21,7 +24,7 @@ public class Player extends Entity {
 
     // The indexes of the equipped weapon and armor
     private int iEquippedWeapon;
-    private int iEquippedArmor;
+    private int iEquippedArmour;
 
     private WorldCoordinate location;
     private transient int moveCounter = 0;
@@ -30,6 +33,20 @@ public class Player extends Entity {
     public Player(WorldCoordinate location) {
         super();
         this.location = location;
+
+        // Add starter inventory
+        inventory.add(ItemRegistry.getInstance().starterArmour);
+        inventory.add(ItemRegistry.getInstance().starterSword);
+
+        // Set equipped index values
+        iEquippedArmour = 0;
+        iEquippedWeapon = 1;
+        resetStats();
+    }
+
+    @Override
+    public int getViewDistance() {
+        return 0;
     }
 
     /**
@@ -95,17 +112,20 @@ public class Player extends Entity {
      */
     @Override
     public void afterMove(WorldCoordinate newCoordinate, World world) {
+        logger.debug("Running afterMove event for " + newCoordinate);
         if (world.getRegion(newCoordinate.getRegionCoordinate()).hasEventForCoordinate(newCoordinate)) {
+            logger.debug("Coordinate " + newCoordinate + " has an event");
             // An entity somewhere has requested that they be alerted when a user enters this cell
             // First find the coordinates of that entity
             WorldCoordinate triggerCoordinate = world.getRegion(newCoordinate.getRegionCoordinate()).getEventForCoordinate(newCoordinate);
 
             // Check if the player has LoS to the entity
+            logger.info("Checking LoS");
             if (world.hasLineOfSight(newCoordinate, triggerCoordinate)) {
                 // If it does, begin combat
                 Entity entity = world.getRegion(triggerCoordinate.getRegionCoordinate()).getEntityAt(triggerCoordinate);
                 CombatManager combatManager = new CombatManager(this, entity);
-
+                combatManager.simulate();
             }
         }
 
@@ -153,5 +173,32 @@ public class Player extends Entity {
 
     public String toString() {
         return "P";
+    }
+
+    @Override
+    public float getStartingHealth() {
+        return 50f;
+    }
+
+    @Override
+    public int getAttackDamage() {
+        return getEquippedWeapon().getDamage();
+    }
+
+    @Override
+    public int getStartingArmour() {
+        return getEquippedArmour().getShielding();
+
+    }
+
+
+    public ArmourItem getEquippedArmour() {
+        // Cast the item to its polymorphic type
+        return (ArmourItem) inventory.get(iEquippedArmour);
+    }
+
+    public SwordItem getEquippedWeapon() {
+        // Cast the item to its polymorphic type
+        return (SwordItem) inventory.get(iEquippedWeapon);
     }
 }

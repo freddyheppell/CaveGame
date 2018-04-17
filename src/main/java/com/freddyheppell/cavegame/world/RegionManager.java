@@ -35,6 +35,9 @@ public class RegionManager {
      */
     private SeedManager seedManager;
 
+    private static final Logger logger = LogManager.getLogger();
+
+
     public RegionManager(String worldName, SeedManager seedManager) {
         saveDir = SaveManager.getSaveFolder(worldName);
         this.seedManager = seedManager;
@@ -125,6 +128,17 @@ public class RegionManager {
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException("Could not load file");
+        }
+    }
+    
+    public void saveAllRegions() {
+        logger.debug("Saving all");
+        for (Map.Entry<RegionCoordinate, Region> entry:
+                regionCache.entrySet()) {
+            if (entry.getValue().modified) {
+                logger.debug("Saving" + entry.getKey());
+                resaveRegion(entry.getKey(), entry.getValue());
+            }
         }
     }
 

@@ -43,7 +43,6 @@ public class OutputFrame {
             }
             else if (world.getRegion(worldCoordinate.getRegionCoordinate()).isEntityAt(worldCoordinate)) {
                 Entity entity = world.getRegion(worldCoordinate.getRegionCoordinate()).getEntityAt(worldCoordinate);
-                System.out.println("entity" + entity.getClass());
                 outputString.append(entity).append("  ");
             } else {
                 // Otherwise show the entity's character

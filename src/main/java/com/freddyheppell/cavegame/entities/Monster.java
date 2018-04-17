@@ -12,6 +12,7 @@ public class Monster extends Entity implements AIEntity {
     public Monster(WorldCoordinate location) {
         super();
         calculateVisibleCells(location);
+        resetStats();
     }
 
     @Override
@@ -20,8 +21,27 @@ public class Monster extends Entity implements AIEntity {
     }
 
     @Override
+    public int getViewDistance() {
+        return 3;
+    }
+
+    @Override
     public String toString() {
-        System.out.println("Outputting monster");
         return "M";
+    }
+
+    @Override
+    public float getStartingHealth() {
+        return 30f;
+    }
+
+    @Override
+    public int getAttackDamage() {
+        return 7;
+    }
+
+    @Override
+    public int getStartingArmour() {
+        return 0;
     }
 }

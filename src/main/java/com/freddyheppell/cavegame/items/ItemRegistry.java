@@ -13,6 +13,8 @@ public class ItemRegistry {
     private double totalWeight = 0.0d;
     private static final Logger logger = LogManager.getLogger();
 
+    public SwordItem starterSword = new SwordItem(100, "Wooden", 1);
+    public ArmourItem starterArmour = new ArmourItem(100, "Leather", 5);
 
     /**
      * Empty constructor for singleton pattern
@@ -111,13 +113,13 @@ public class ItemRegistry {
         // Register known types of items
         register(new Item[]{
                 // SWORD TIERS
-                new SwordItem(100, "Wooden", 1),
+                starterSword,
                 new SwordItem(80, "Iron", 5),
                 new SwordItem(60, "Steel", 8),
                 new SwordItem(10, "Infused", 15),
 
                 // ARMOUR TIERS
-                new ArmourItem(100, "Leather", 5),
+                starterArmour,
                 new ArmourItem(80, "Chainmail", 8),
                 new ArmourItem(60, "Iron", 10),
                 new ArmourItem(10, "Infused", 15),

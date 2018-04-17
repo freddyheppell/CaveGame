@@ -1,21 +1,40 @@
 package com.freddyheppell.cavegame.entities;
 
 import com.freddyheppell.cavegame.CaveGame;
+import com.freddyheppell.cavegame.save.SaveManager;
 import com.freddyheppell.cavegame.world.World;
 import com.freddyheppell.cavegame.world.cells.Cell;
 import com.freddyheppell.cavegame.world.coord.Transform;
 import com.freddyheppell.cavegame.world.coord.WorldCoordinate;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
-public class Entity {
+public abstract class Entity {
     protected transient List<WorldCoordinate> visibleCells;
+    private float health;
+    private Integer armour;
+    private Queue<Integer> armourChange;
+    private static final Logger logger = LogManager.getLogger();
+
 
     /**
      * The Entity class should not be directly instantiated
      */
     public Entity() {
+        armourChange = new LinkedList<>();
+    }
+
+    public void resetStats() {
+        health = getStartingHealth();
+        armour = getStartingArmour();
+        armourChange.clear();
+        armourChange.add(0);
+        armourChange.add(0);
     }
 
     /**
@@ -23,29 +42,34 @@ public class Entity {
      *
      * @return The radial view distance
      */
-    public int getViewDistance() {
-        return 3;
-    }
+    public abstract int getViewDistance();
 
     /**
      * Get the cells that are visible to the entity
      */
     public void calculateVisibleCells(WorldCoordinate location) {
+
         this.visibleCells = new ArrayList<>();
         int r = getViewDistance();
         int rSq = r*r;
         float correction = r * 0.8f;
         float limit = rSq + correction;
 
-        for (int y = (-r + location.wy); y <= (r + location.wy); y++) {
-            for (int x = (-r + location.wx); x <= (r + location.wy); x++) {
+        logger.debug("Limit " + limit);
+
+        for (int y = -r; y <= r; y++) {
+            for (int x = -r; x <= r; x++) {
+                logger.debug(x + " " + y);
                 if ((x*x) + (y*y) <= limit) {
-                    visibleCells.add(new WorldCoordinate(x, y));
+                    // Add the origin coordinates
+                    visibleCells.add(new WorldCoordinate(location.wx + x, location.wy + y));
                 }
             }
         }
 
         registerVisibleCells(location);
+
+        CaveGame.game.world.getRegionManager().saveAllRegions();
     }
 
     /**
@@ -54,10 +78,14 @@ public class Entity {
      * @param location The location of this entity
      */
     private void registerVisibleCells(WorldCoordinate location) {
+        logger.debug("Registering " + visibleCells.size() + " visible cells");
+
         for (WorldCoordinate visibleCell:
              visibleCells) {
             CaveGame.game.registerEvent(location, visibleCell);
         }
+
+
     }
 
     public List<WorldCoordinate> getVisibleCells() {
@@ -74,10 +102,43 @@ public class Entity {
 
     }
 
+    public float getHealth() {
+        return health;
+    }
+
+    public boolean isAlive() {
+        return health > 0;
+    }
+
+    public void doDamage(float damageAmount) {
+        this.health -= damageAmount;
+    }
+
+    public void removeArmour(int lostArmour) {
+        armourChange.add(lostArmour);
+        int newArmour = armour - lostArmour;
+        // The entity's armour can't be lower than 0
+        armour = Math.max(newArmour, 0);
+    }
+
+    public void giveBackArmour() {
+        if (armourChange.peek() != null) {
+            armour += armourChange.poll();
+        }
+    }
+
+    public int getArmour() {
+        return armour;
+    }
+
     /**
      * @return The string representation of the entity
      */
-    public String toString() {
-        return "";
-    }
+    public abstract String toString();
+
+    public abstract float getStartingHealth();
+
+    public abstract int getAttackDamage();
+
+    public abstract int getStartingArmour();
 }

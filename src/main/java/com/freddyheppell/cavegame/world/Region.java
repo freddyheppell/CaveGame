@@ -8,6 +8,8 @@ import com.freddyheppell.cavegame.world.coord.CellCoordinate;
 import com.freddyheppell.cavegame.world.coord.RegionCoordinate;
 import com.freddyheppell.cavegame.world.coord.WorldCoordinate;
 import com.freddyheppell.cavegame.world.coord.CoordinateProperties;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,6 +19,8 @@ public class Region {
     private Cell[][] cells = new Cell[Config.getInt("iRegionSize")][Config.getInt("iRegionSize")];
     private RegionCoordinate regionCoordinate;
     private Random random;
+
+    private static final Logger logger = LogManager.getLogger();
 
     // Due to serialisation constraints, the entities in the region must be stored as two lists
     // These variables are treated as a hashmap
@@ -28,6 +32,11 @@ public class Region {
     // 'sources' are the entity that has requested the event
     private ArrayList<WorldCoordinate> triggerLocations = new ArrayList<>();
     private ArrayList<WorldCoordinate> triggerSources = new ArrayList<>();
+
+    /**
+     * Has the world been modified since the last save?
+     */
+    public transient boolean modified = true;
 
     public Region(long seed, RegionCoordinate regionCoordinate) {
         random = new Random(seed);
@@ -69,15 +78,12 @@ public class Region {
     }
 
     public void generateEntities() {
-        System.out.println("Generating entities");
-
         WorldCoordinate entitySpawnCell = getEntitySpawnCell();
 
         if (entitySpawnCell != null) {
             Entity entity = new Monster(entitySpawnCell);
 
             entityCoordinates.add(entitySpawnCell);
-            System.out.println(entityCoordinates.size());
             entities.add(entity);
         }
     }
@@ -188,11 +194,20 @@ public class Region {
      * @param triggerLocation The cell that causes the trigger
      */
     public void registerEvent(WorldCoordinate triggerSource, WorldCoordinate triggerLocation) {
+        modified = true;
+        logger.debug("Registering event");
         triggerSources.add(triggerSource);
         triggerLocations.add(triggerLocation);
     }
 
     public boolean hasEventForCoordinate(WorldCoordinate worldCoordinate) {
+        logger.debug("Checking events for " + worldCoordinate);
+        logger.debug(triggerLocations);
+        if (triggerLocations.contains(worldCoordinate)) {
+            logger.debug("Event found");
+            return true;
+        }
+        logger.debug("No event found");
         return triggerLocations.contains(worldCoordinate);
     }
 

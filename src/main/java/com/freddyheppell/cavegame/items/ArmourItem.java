@@ -25,4 +25,8 @@ public class ArmourItem extends Item {
     public boolean isEquippable() {
         return true;
     }
+
+    public int getShielding() {
+        return shielding;
+    }
 }
