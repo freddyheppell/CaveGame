@@ -24,9 +24,9 @@ public class ChestCell extends Cell {
     @Override
     public String toString() {
         if (claimed) {
-            return "□";
+            return " ";
         } else {
-            return "■";
+            return "C";
         }
     }
 

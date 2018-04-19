@@ -5,7 +5,9 @@ import com.freddyheppell.cavegame.config.Config;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Scanner;
 
 public class Console {
@@ -18,6 +20,8 @@ public class Console {
     public enum OperatingSystem {WINDOWS, MAC, LINUX, UNKNOWN}
 
     private static OperatingSystem operatingSystem;
+
+    private static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
     /**
      * Get the user's operating system
@@ -72,15 +76,16 @@ public class Console {
      * @return The integer representation of the character
      */
     public static int readInput() throws IOException {
-        if (getOperatingSystem() == OperatingSystem.WINDOWS) {
+        if (false) {
             // On Windows, use the RawConsoleInput library
             // This support enter-less controls, which *NIX does not
             return RawConsoleInput.read(true);
         } else {
             // Use normal scanner
-            Scanner sc = new Scanner(System.in);
+            System.out.println("Get Entry");
+            String entry = br.readLine();
 
-            return sc.next().charAt(0);
+            return entry.charAt(0);
         }
     }
 
