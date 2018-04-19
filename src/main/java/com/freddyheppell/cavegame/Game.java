@@ -41,9 +41,6 @@ public class Game {
         this.gameName = scanner.nextLine();
 
         this.world = new World(seedManager, this.gameName);
-
-        logger.info("Screen size detected as: {} height, {} width", Console.getHeight(), Console.getWidth());
-
     }
 
     public void initPlayer() throws IOException {

@@ -2,8 +2,6 @@ package com.freddyheppell.cavegame.utility;
 
 import biz.source_code.utils.RawConsoleInput;
 import com.freddyheppell.cavegame.config.Config;
-import org.jline.terminal.Terminal;
-import org.jline.terminal.TerminalBuilder;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -76,7 +74,7 @@ public class Console {
      * @return The integer representation of the character
      */
     public static int readInput() throws IOException {
-        if (false) {
+        if (getOperatingSystem() == OperatingSystem.WINDOWS) {
             // On Windows, use the RawConsoleInput library
             // This support enter-less controls, which *NIX does not
             return RawConsoleInput.read(true);
@@ -89,16 +87,16 @@ public class Console {
         }
     }
 
-    /**
-     * @return The instance of the terminal
-     */
-    private static Terminal getTerminal() {
-        try {
-            return TerminalBuilder.builder().build();
-        } catch (IOException e) {
-            throw new RuntimeException("Unable to get terminal instance!");
-        }
-    }
+//    /**
+//     * @return The instance of the terminal
+//     */
+//    private static Terminal getTerminal() {
+//        try {
+//            return TerminalBuilder.builder().build();
+//        } catch (IOException e) {
+//            throw new RuntimeException("Unable to get terminal instance!");
+//        }
+//    }
 
     /**
      * Get the usable width of the terminal
@@ -109,7 +107,8 @@ public class Console {
         // This number of cells appears to the left and right of the player (divide by 2)
         // and each cell consists of 3 characters (divide by 3). Therefore divide by 6.
         // Some terminals will round up partial character widths, so subtract 1 to be safe
-        return Math.floorDiv(getTerminal().getWidth() - 1, 6) - 1;
+//        return Math.floorDiv(getTerminal().getWidth() - 1, 6) - 1;
+        return 10;
     }
 
     /**
@@ -120,7 +119,8 @@ public class Console {
     public static int getHeight() {
         // This number of cells appears above and below the player (divide by 2)
         // Subtract two lines for the input prompt and the line created upon pressing enter
-        return Math.floorDiv(getTerminal().getHeight() - 1, 2) - 2;
+//        return Math.floorDiv(getTerminal().getHeight() - 1, 2) - 2;
+        return 10;
     }
 
     public static void requestEnter() {
