@@ -99,7 +99,7 @@ public class Region {
             int x = random.nextInt(Config.getInt("iRegionSize"));
             int y = random.nextInt(Config.getInt("iRegionSize"));
 
-            if (!cells[x][y].isBlocking()) {
+            if (!cells[x][y].canSpawn()) {
                 CellCoordinate cellCoordinate = new CellCoordinate(x, y);
                 return WorldCoordinate.fromRegionAndCell(regionCoordinate, cellCoordinate);
             }

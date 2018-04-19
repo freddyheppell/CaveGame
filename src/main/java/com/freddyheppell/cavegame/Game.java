@@ -90,6 +90,17 @@ public class Game {
     }
 
     public void gameLoop() throws IOException {
+        // Check if the player has died
+        if (!player.alive) {
+            // The player has died
+
+            // Place them near the middle of the current region
+            player.setLocation(getWorld().getRegion(player.getLocation().getRegionCoordinate()).getEntitySpawnCell());
+
+            // Resurrect them
+            player.alive = true;
+        }
+
         OutputFrame outputFrame = new OutputFrame(world, player);
         String output = outputFrame.toString();
         Console.clearScreen();

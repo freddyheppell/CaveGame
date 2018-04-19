@@ -17,6 +17,7 @@ import java.util.Queue;
 public abstract class Entity {
     protected transient List<WorldCoordinate> visibleCells;
     private float health;
+    public boolean alive = true;
     private Integer armour;
     private Queue<Integer> armourChange;
     private static final Logger logger = LogManager.getLogger();

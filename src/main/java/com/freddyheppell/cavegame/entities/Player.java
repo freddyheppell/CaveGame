@@ -171,6 +171,10 @@ public class Player extends Entity {
         return location;
     }
 
+    public void setLocation(WorldCoordinate location) {
+        this.location = location;
+    }
+
     public String toString() {
         return "P";
     }

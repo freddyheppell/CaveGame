@@ -119,9 +119,14 @@ public class CombatManager {
         }
 
         if (player.isAlive()) {
+            enemy.alive = false;
             System.out.println("You have killed the monster!");
         } else {
+            player.alive = false;
             System.out.println("You have been killed!");
         }
+
+        player.resetStats();
+        enemy.resetStats();
     }
 }

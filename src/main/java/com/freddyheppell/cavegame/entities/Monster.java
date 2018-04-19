@@ -34,7 +34,7 @@ public class Monster extends Entity implements AIEntity {
 
     @Override
     public int getAttackDamage() {
-        return 3;
+        return 100;
     }
 
     @Override

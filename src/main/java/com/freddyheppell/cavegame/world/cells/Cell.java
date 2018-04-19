@@ -23,6 +23,16 @@ public abstract class Cell {
     public abstract boolean isSpawnAllowed();
 
     /**
+     * Combine all spawning requirements
+     *
+     * @return Boolean if this cell can be used
+     */
+    public boolean canSpawn() {
+        // Cells with a trigger are not valid for spawning
+        return isSpawnAllowed() && !isBlocking() && listener != null;
+    }
+
+    /**
      * Event function for when the player enters this cell
      *
      * @param player The player instance
