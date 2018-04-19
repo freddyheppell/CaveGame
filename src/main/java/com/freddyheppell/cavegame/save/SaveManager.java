@@ -130,13 +130,13 @@ public class SaveManager {
      * @throws IOException If the file was unable to be saved
      */
     public static void saveRegion(Region region, File saveLocation) throws IOException {
-        region.modified = false;
         Gson gson = new GsonBuilder()
                 .registerTypeAdapterFactory(CELL_ADAPTER_FACTORY)
                 .registerTypeAdapterFactory(ITEM_ADAPTER_FACTORY)
                 .registerTypeAdapterFactory(ENTITY_ADAPTER_FACTORY)
                 .create();
         logger.info("Starting region save");
+        logger.info("Entity count: " + region.entityCount());
         Writer writer = new FileWriter(saveLocation, false);
         gson.toJson(region, writer);
         writer.close();

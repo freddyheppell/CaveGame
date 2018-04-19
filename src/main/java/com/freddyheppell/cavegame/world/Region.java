@@ -1,5 +1,6 @@
 package com.freddyheppell.cavegame.world;
 
+import com.freddyheppell.cavegame.CaveGame;
 import com.freddyheppell.cavegame.config.Config;
 import com.freddyheppell.cavegame.entities.Entity;
 import com.freddyheppell.cavegame.entities.Monster;
@@ -26,12 +27,6 @@ public class Region {
     // These variables are treated as a hashmap
     private ArrayList<WorldCoordinate> entityCoordinates = new ArrayList<>();
     private ArrayList<Entity> entities = new ArrayList<>();
-
-    // A list of events added for this region.
-    // 'locations' are the cells that activate the event
-    // 'sources' are the entity that has requested the event
-    private ArrayList<WorldCoordinate> triggerLocations = new ArrayList<>();
-    private ArrayList<WorldCoordinate> triggerSources = new ArrayList<>();
 
     /**
      * Has the world been modified since the last save?
@@ -63,6 +58,10 @@ public class Region {
         }
     }
 
+    public int entityCount() {
+        return entityCoordinates.size();
+    }
+
     public void generateChests() {
         for (int x = 0; x < Config.getInt("iRegionSize"); x++) {
             for (int y = 0; y < Config.getInt("iRegionSize"); y++) {
@@ -81,10 +80,16 @@ public class Region {
         WorldCoordinate entitySpawnCell = getEntitySpawnCell();
 
         if (entitySpawnCell != null) {
-            Entity entity = new Monster(entitySpawnCell);
-
-            entityCoordinates.add(entitySpawnCell);
+            Entity entity = new Monster();
             entities.add(entity);
+            entityCoordinates.add(entitySpawnCell);
+            CaveGame.game.getWorld().getRegionManager().resaveRegion(entitySpawnCell.getRegionCoordinate(), this);
+
+            entity.calculateVisibleCells(entitySpawnCell);
+
+
+            // Now mark the region as changed
+            modified = true;
         }
     }
 
@@ -187,32 +192,15 @@ public class Region {
         return cells;
     }
 
-    /**
-     * Register an entity activation event
-     *
-     * @param triggerSource   The entity that must be alerted
-     * @param triggerLocation The cell that causes the trigger
-     */
-    public void registerEvent(WorldCoordinate triggerSource, WorldCoordinate triggerLocation) {
-        modified = true;
-        logger.debug("Registering event");
-        triggerSources.add(triggerSource);
-        triggerLocations.add(triggerLocation);
-    }
-
     public boolean hasEventForCoordinate(WorldCoordinate worldCoordinate) {
         logger.debug("Checking events for " + worldCoordinate);
-        logger.debug(triggerLocations);
-        if (triggerLocations.contains(worldCoordinate)) {
+
+        if (getCellIfExists(worldCoordinate).listener != null) {
             logger.debug("Event found");
             return true;
         }
         logger.debug("No event found");
-        return triggerLocations.contains(worldCoordinate);
-    }
-
-    public WorldCoordinate getEventForCoordinate(WorldCoordinate worldCoordinate) {
-        return triggerSources.get(triggerLocations.indexOf(worldCoordinate));
+        return false;
     }
 
     public boolean isEntityAt(WorldCoordinate worldCoordinate) {
@@ -220,6 +208,9 @@ public class Region {
     }
 
     public Entity getEntityAt(WorldCoordinate worldCoordinate) {
+        logger.debug("Getting entity at " + worldCoordinate);
+        logger.debug(regionCoordinate);
+        logger.debug(entities);
         return entities.get(entityCoordinates.indexOf(worldCoordinate));
     }
 

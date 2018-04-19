@@ -82,8 +82,11 @@ public class Game {
      * @param triggerLocation The cell that causes the trigger
      */
     public void registerEvent(WorldCoordinate triggerSource, WorldCoordinate triggerLocation) {
-        logger.debug("Registering event in world");
-        world.getRegion(triggerLocation.getRegionCoordinate()).registerEvent(triggerSource, triggerLocation);
+        logger.debug("Registering event in world at" + triggerLocation);
+        logger.debug(triggerLocation == null);
+        // Set the listener of this cell to the entity
+        world.getCell(triggerLocation).listener = triggerSource;
+        world.getRegion(triggerLocation.getRegionCoordinate()).modified = true;
     }
 
     public void gameLoop() throws IOException {

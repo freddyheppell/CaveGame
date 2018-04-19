@@ -55,11 +55,9 @@ public abstract class Entity {
         float correction = r * 0.8f;
         float limit = rSq + correction;
 
-        logger.debug("Limit " + limit);
 
         for (int y = -r; y <= r; y++) {
             for (int x = -r; x <= r; x++) {
-                logger.debug(x + " " + y);
                 if ((x*x) + (y*y) <= limit) {
                     // Add the origin coordinates
                     visibleCells.add(new WorldCoordinate(location.wx + x, location.wy + y));
@@ -111,7 +109,7 @@ public abstract class Entity {
     }
 
     public void doDamage(float damageAmount) {
-        this.health -= damageAmount;
+        this.health = Math.max(this.health - damageAmount, 0);
     }
 
     public void removeArmour(int lostArmour) {
@@ -123,6 +121,7 @@ public abstract class Entity {
 
     public void giveBackArmour() {
         if (armourChange.peek() != null) {
+            System.out.println(armourChange.peek() + " Armour Restored");
             armour += armourChange.poll();
         }
     }

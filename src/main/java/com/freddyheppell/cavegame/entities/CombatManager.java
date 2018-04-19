@@ -14,6 +14,8 @@ public class CombatManager {
 
     private Random random = new Random();
 
+    private boolean extraTurn = false;
+
     public CombatManager(Player player, Entity enemy) {
         this.player = player;
         this.enemy = enemy;
@@ -29,6 +31,17 @@ public class CombatManager {
     }
 
     private Turn getOtherTurn(Turn currentTurn) {
+        if (random.nextFloat() <= Config.getFloat("fCombatStunProbability")) {
+            extraTurn = true;
+            if (currentTurn == Turn.PLAYER) {
+                System.out.println("You stunned the enemy and may attack again");
+                return currentTurn;
+            } else {
+                System.out.println("You were stunned! The enemy may attack again");
+                return currentTurn;
+            }
+        }
+
         if (currentTurn == Turn.ENEMY) {
             return Turn.PLAYER;
         }
@@ -48,7 +61,13 @@ public class CombatManager {
         StringBuilder output = new StringBuilder();
 
         // Give the entity armour back for this turn
-        defender.giveBackArmour();
+        if (!extraTurn) {
+            // If this is an extra turn, the defender has been stunned so don't give them armour back
+            defender.giveBackArmour();
+        } else {
+            extraTurn = false;
+        }
+
         int attackDamage = attacker.getAttackDamage();
         int defenderShielding = defender.getArmour();
 
@@ -59,7 +78,6 @@ public class CombatManager {
         defender.doDamage(damageDone);
         // Subtract armour from the defending entity
         defender.removeArmour(usedArmour);
-
 
         output.append(String.format("%s attacks %s for %f damage", attackerDesc, defenderDesc, damageDone));
 
@@ -74,6 +92,12 @@ public class CombatManager {
         }
 
         System.out.println(output);
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public void simulate() {
@@ -89,6 +113,15 @@ public class CombatManager {
             } else {
                 doTurn(enemy, player, "Enemy", "Player");
             }
+
+            currentTurn = getOtherTurn(currentTurn);
+            System.out.print("\n");
+        }
+
+        if (player.isAlive()) {
+            System.out.println("You have killed the monster!");
+        } else {
+            System.out.println("You have been killed!");
         }
     }
 }

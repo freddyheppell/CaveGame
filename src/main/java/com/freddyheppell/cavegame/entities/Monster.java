@@ -6,12 +6,9 @@ public class Monster extends Entity implements AIEntity {
 
     /**
      * The Entity class should not be directly instantiated
-     *
-     * @param location The location of the entity
      */
-    public Monster(WorldCoordinate location) {
+    public Monster() {
         super();
-        calculateVisibleCells(location);
         resetStats();
     }
 
@@ -32,12 +29,12 @@ public class Monster extends Entity implements AIEntity {
 
     @Override
     public float getStartingHealth() {
-        return 30f;
+        return 25f;
     }
 
     @Override
     public int getAttackDamage() {
-        return 7;
+        return 3;
     }
 
     @Override

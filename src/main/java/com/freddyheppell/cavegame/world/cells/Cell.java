@@ -3,6 +3,7 @@ package com.freddyheppell.cavegame.world.cells;
 
 import com.freddyheppell.cavegame.entities.Player;
 import com.freddyheppell.cavegame.world.coord.RegionCoordinate;
+import com.freddyheppell.cavegame.world.coord.WorldCoordinate;
 
 public abstract class Cell {
     public abstract String toString();
@@ -28,6 +29,11 @@ public abstract class Cell {
      * @param regionCoordinate The region in which this cell is located
      */
     public abstract void onEnter(Player player, RegionCoordinate regionCoordinate);
+
+    /**
+     * The location of the entity that has set an event at this location
+     */
+    public WorldCoordinate listener = null;
 
     /**
      * Empty constructor for serialisation

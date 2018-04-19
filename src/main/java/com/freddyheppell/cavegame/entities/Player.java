@@ -113,11 +113,11 @@ public class Player extends Entity {
     @Override
     public void afterMove(WorldCoordinate newCoordinate, World world) {
         logger.debug("Running afterMove event for " + newCoordinate);
-        if (world.getRegion(newCoordinate.getRegionCoordinate()).hasEventForCoordinate(newCoordinate)) {
+        if (world.getCell(newCoordinate).listener != null) {
             logger.debug("Coordinate " + newCoordinate + " has an event");
             // An entity somewhere has requested that they be alerted when a user enters this cell
             // First find the coordinates of that entity
-            WorldCoordinate triggerCoordinate = world.getRegion(newCoordinate.getRegionCoordinate()).getEventForCoordinate(newCoordinate);
+            WorldCoordinate triggerCoordinate = world.getCell(newCoordinate).listener;
 
             // Check if the player has LoS to the entity
             logger.info("Checking LoS");

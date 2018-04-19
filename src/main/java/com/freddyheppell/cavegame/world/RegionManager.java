@@ -21,7 +21,11 @@ public class RegionManager {
     private LinkedHashMap<RegionCoordinate, Region> regionCache = new LinkedHashMap<RegionCoordinate, Region>() {
         @Override
         protected boolean removeEldestEntry(Map.Entry eldest) {
-            return size() > Config.getInt("iRegionCacheSize");
+            boolean doClear = size() > Config.getInt("iRegionCacheSize");
+            if (doClear) {
+                logger.debug("Clearing...");
+            }
+            return doClear;
         }
     };
 
@@ -97,8 +101,10 @@ public class RegionManager {
             Region region = createRegion(regionCoordinate);
             // Add entities
             region.generateEntities();
-            // Now resave
-            resaveRegion(regionCoordinate, region);
+
+            // Save all current regions
+            // This can't just be the current region because events may modify other regions
+            saveAllRegions();
 
             return region;
         }

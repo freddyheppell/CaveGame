@@ -39,15 +39,19 @@ public class OutputFrame {
             // Decide what character should be shown for this coordinate
             if (worldCoordinate.equals(player.getLocation())) {
                 // If the player is on this cell, show the player character
-                outputString.append(player).append("  ");
-            }
-            else if (world.getRegion(worldCoordinate.getRegionCoordinate()).isEntityAt(worldCoordinate)) {
+                outputString.append(player);
+            } else if (world.getRegion(worldCoordinate.getRegionCoordinate()).isEntityAt(worldCoordinate)) {
                 Entity entity = world.getRegion(worldCoordinate.getRegionCoordinate()).getEntityAt(worldCoordinate);
-                outputString.append(entity).append("  ");
-            } else {
-                // Otherwise show the entity's character
-                outputString.append(world.getCell(worldCoordinate)).append("  ");
+                outputString.append(entity);
+            } else if (world.getCell(worldCoordinate).listener != null){
+                outputString.append("!");
             }
+            else{
+                // Otherwise show the cell's character
+                outputString.append(world.getCell(worldCoordinate));
+            }
+
+            outputString.append("  ");
 
             lastY = worldCoordinate.wy;
         }
