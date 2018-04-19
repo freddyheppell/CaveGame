@@ -1,5 +1,6 @@
 package com.freddyheppell.cavegame.utility;
 
+import biz.source_code.utils.RawConsoleInput;
 import com.freddyheppell.cavegame.config.Config;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
@@ -15,6 +16,7 @@ public class Console {
     private static final String unixClearString = "\033[H\033[2J";
 
     public enum OperatingSystem {WINDOWS, MAC, LINUX, UNKNOWN}
+
     private static OperatingSystem operatingSystem;
 
     /**
@@ -69,10 +71,17 @@ public class Console {
      *
      * @return The integer representation of the character
      */
-    public static int readInput() {
-        Scanner sc = new Scanner(System.in);
+    public static int readInput() throws IOException {
+        if (getOperatingSystem() == OperatingSystem.WINDOWS) {
+            // On Windows, use the RawConsoleInput library
+            // This support enter-less controls, which *NIX does not
+            return RawConsoleInput.read(true);
+        } else {
+            // Use normal scanner
+            Scanner sc = new Scanner(System.in);
 
-        return sc.next().charAt(0);
+            return sc.next().charAt(0);
+        }
     }
 
     /**
@@ -107,5 +116,10 @@ public class Console {
         // This number of cells appears above and below the player (divide by 2)
         // Subtract two lines for the input prompt and the line created upon pressing enter
         return Math.floorDiv(getTerminal().getHeight() - 1, 2) - 2;
+    }
+
+    public static void requestEnter() {
+        Scanner sc = new Scanner(System.in);
+        sc.nextLine();
     }
 }

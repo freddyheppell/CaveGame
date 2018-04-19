@@ -99,6 +99,8 @@ public class Game {
 
             // Resurrect them
             player.alive = true;
+
+            Console.requestEnter();
         }
 
         OutputFrame outputFrame = new OutputFrame(world, player);

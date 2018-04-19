@@ -92,7 +92,7 @@ public class Player extends Entity {
 
         }
         System.out.println("END INVENTORY");
-        Console.readInput();
+        Console.requestEnter();
     }
 
     /**
