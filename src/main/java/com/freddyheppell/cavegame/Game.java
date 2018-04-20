@@ -86,7 +86,7 @@ public class Game {
         world.getRegion(triggerLocation.getRegionCoordinate()).modified = true;
     }
 
-    public void gameLoop() throws IOException {
+    public boolean gameLoop() throws IOException {
         // Check if the player has died
         if (!player.alive) {
             // The player has died
@@ -125,7 +125,7 @@ public class Game {
                 player.showInventory();
                 break;
             case QUIT:
-                break;
+                return false;
             default:
                 throw new RuntimeException("Bad input!" + (char) consoleInput);
         }
@@ -136,5 +136,7 @@ public class Game {
         } catch (InterruptedException e) {
             throw new RuntimeException("Interrupted during frame sleep");
         }
+
+        return true;
     }
 }

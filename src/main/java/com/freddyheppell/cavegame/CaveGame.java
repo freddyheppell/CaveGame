@@ -20,10 +20,11 @@ public class CaveGame {
     }
 
     public static void main(String[] args) {
+        boolean shouldContinue = true;
         try {
             game.initPlayer();
-            while (true) {
-                game.gameLoop();
+            while (shouldContinue) {
+                shouldContinue = game.gameLoop();
             }
         } catch (IOException e) {
             e.printStackTrace();
