@@ -16,6 +16,7 @@ import com.freddyheppell.cavegame.world.coord.WorldCoordinate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -84,15 +85,92 @@ public class Player extends Entity {
         inventory.add(item);
     }
 
-    public void showInventory() {
-        System.out.println("INVENTORY");
-        for (Item item :
-                inventory) {
-            System.out.println(item.getDisplayName());
+    public void showInventory() throws IOException {
+        boolean showInv = true;
 
+        while (showInv) {
+            Console.clearScreen();
+
+            System.out.println("Your Inventory");
+
+            StringBuilder invString = new StringBuilder();
+
+            for (int i = 0; i < inventory.size(); i++) {
+                // For each item, append it's human readable number and name
+                invString.append(i+1).append(": ")
+                        .append(inventory.get(i).getDisplayName());
+
+                if (i == iEquippedArmour || i == iEquippedWeapon) {
+                    // If its currently equipped, show that
+                    invString.append(" (Equipped)");
+                }
+
+                invString.append("\n");
+            }
+
+            System.out.print(invString);
+
+            System.out.println();
+
+            boolean validString = false;
+
+            while (!validString) {
+                // Ask the user for a command
+                System.out.println("x Exit, e<num> to equip");
+                System.out.print("> ");
+                String inputString = Console.readLine();
+                inputString = inputString.toLowerCase();
+
+                if (inputString.charAt(0) == 'x') {
+                    validString = true;
+                    showInv = false;
+                } else if (inputString.charAt(0) == 'e' && inputString.length() != 1){
+                    // If the string begins with an 'e' and contains further characters
+                    // parse it as an equip request
+
+                    // Remove the leading 'e'
+                    String equipString = inputString.substring(1);
+
+                    // Attempt to parse the remainder as an int
+                    int newIndex;
+
+                    try {
+                        newIndex = Integer.parseInt(equipString);
+                    } catch (NumberFormatException e) {
+                        System.out.println("! Invalid number !");
+
+                        // Ask for input again
+                        continue;
+                    }
+
+                    if (newIndex < (inventory.size() + 1)) {
+                        // Check if it's within range
+
+                        // Subtract one because the inventory list starts at 0
+                        newIndex--;
+
+                        Item item = inventory.get(newIndex);
+
+                        if (item.isEquippable()) {
+                            // Equip as armour
+                            iEquippedArmour = newIndex;
+                            System.out.println("Equipped!");
+                            validString = true;
+                        } else if (item.isWeapon()) {
+                            iEquippedWeapon = newIndex;
+                            System.out.println("Equipped!");
+                            validString = true;
+                        } else {
+                            System.out.println("! Cannot be equipped !");
+                        }
+                    }
+                } else {
+                    // Not one of the recognised commands
+                    System.out.println("! Unrecognised command !");
+
+                }
+            }
         }
-        System.out.println("END INVENTORY");
-        Console.requestEnter();
     }
 
     /**
@@ -126,6 +204,13 @@ public class Player extends Entity {
                 Entity entity = world.getRegion(triggerCoordinate.getRegionCoordinate()).getEntityAt(triggerCoordinate);
                 CombatManager combatManager = new CombatManager(this, entity);
                 combatManager.simulate();
+
+                CaveGame.game.setPlayer(combatManager.getPlayer());
+
+                if (!combatManager.getEnemy().isAlive()) {
+                    // If the enemy has died, remove it
+                    return;
+                }
             }
         }
 

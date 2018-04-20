@@ -6,6 +6,7 @@ import java.util.Random;
 
 public class CombatManager {
     private Player player;
+
     private Entity enemy;
 
     private float overallMultiplier = Config.getFloat("fArmourProtection") * Config.getFloat("fDamageMultiplier");
@@ -128,5 +129,13 @@ public class CombatManager {
 
         player.resetStats();
         enemy.resetStats();
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public Entity getEnemy() {
+        return enemy;
     }
 }

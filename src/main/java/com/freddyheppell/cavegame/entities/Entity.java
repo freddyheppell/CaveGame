@@ -47,6 +47,8 @@ public abstract class Entity {
 
     /**
      * Get the cells that are visible to the entity
+     *
+     * @param location The current location of the entity
      */
     public void calculateVisibleCells(WorldCoordinate location) {
 

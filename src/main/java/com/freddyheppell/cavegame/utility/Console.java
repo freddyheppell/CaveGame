@@ -73,7 +73,7 @@ public class Console {
      *
      * @return The integer representation of the character
      */
-    public static int readInput() throws IOException {
+    public static int readChar() throws IOException {
         if (getOperatingSystem() == OperatingSystem.WINDOWS) {
             // On Windows, use the RawConsoleInput library
             // This support enter-less controls, which *NIX does not
@@ -83,8 +83,26 @@ public class Console {
             System.out.println("Get Entry");
             String entry = br.readLine();
 
-            return entry.charAt(0);
+            if (entry.length() > 0) {
+                // If at least one character was entered, pick the first
+                return entry.charAt(0);
+            }
+
+            // If nothing was entered, pick an invalid character
+            return Character.MIN_VALUE;
         }
+    }
+
+    /**
+     * Read an entire line of input
+     *
+     * @return The input line
+     * @throws IOException when an exception is encountered reading
+     */
+    public static String readLine() throws IOException {
+        // Use normal scanner
+        System.out.println("Get Entry");
+        return br.readLine();
     }
 
 //    /**

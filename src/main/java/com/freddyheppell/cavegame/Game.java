@@ -7,20 +7,16 @@ import com.freddyheppell.cavegame.items.ItemRegistry;
 import com.freddyheppell.cavegame.save.SaveManager;
 import com.freddyheppell.cavegame.utility.Console;
 import com.freddyheppell.cavegame.world.OutputFrame;
-import com.freddyheppell.cavegame.world.RegionManager;
 import com.freddyheppell.cavegame.world.SeedManager;
 import com.freddyheppell.cavegame.world.World;
 import com.freddyheppell.cavegame.world.coord.CoordinateProperties;
-import com.freddyheppell.cavegame.world.coord.RegionCoordinate;
 import com.freddyheppell.cavegame.world.coord.WorldCoordinate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Scanner;
-import java.util.concurrent.TimeUnit;
 
 public class Game {
     public World world;
@@ -57,6 +53,9 @@ public class Game {
         }
     }
 
+    /**
+     * Save the player instance
+     */
     public void savePlayer() {
         File saveDir = SaveManager.getSaveFolder(gameName);
 
@@ -86,6 +85,12 @@ public class Game {
         world.getRegion(triggerLocation.getRegionCoordinate()).modified = true;
     }
 
+    /**
+     * Run one iteration of the game
+     *
+     * @return Should the game quit
+     * @throws IOException If an exception is encountered
+     */
     public boolean gameLoop() throws IOException {
         // Check if the player has died
         if (!player.alive) {
@@ -105,7 +110,7 @@ public class Game {
         Console.clearScreen();
         System.out.println(output);
 
-        int consoleInput = Console.readInput();
+        int consoleInput = Console.readChar();
         EnumKey key = EnumKey.valueOf(consoleInput);
 
         switch (key) {
@@ -138,5 +143,9 @@ public class Game {
         }
 
         return true;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
     }
 }

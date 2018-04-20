@@ -2,6 +2,7 @@ package com.freddyheppell.cavegame;
 
 
 import com.freddyheppell.cavegame.config.Config;
+import com.freddyheppell.cavegame.utility.Console;
 
 import java.io.IOException;
 
@@ -26,6 +27,8 @@ public class CaveGame {
             while (shouldContinue) {
                 shouldContinue = game.gameLoop();
             }
+            Console.clearScreen();
+            System.out.println("Quitting game");
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException("Error getting input");
