@@ -80,7 +80,6 @@ public class Console {
             return RawConsoleInput.read(true);
         } else {
             // Use normal scanner
-            System.out.println("Get Entry");
             String entry = br.readLine();
 
             if (entry.length() > 0) {
@@ -101,7 +100,6 @@ public class Console {
      */
     public static String readLine() throws IOException {
         // Use normal scanner
-        System.out.println("Get Entry");
         return br.readLine();
     }
 

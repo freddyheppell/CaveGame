@@ -74,7 +74,7 @@ public class Game {
     /**
      * Register an entity activation event
      *
-     * @param triggerSource The entity that must be alerted
+     * @param triggerSource   The entity that must be alerted
      * @param triggerLocation The cell that causes the trigger
      */
     public void registerEvent(WorldCoordinate triggerSource, WorldCoordinate triggerLocation) {
@@ -110,6 +110,7 @@ public class Game {
         Console.clearScreen();
         System.out.println(output);
 
+
         int consoleInput = Console.readChar();
         EnumKey key = EnumKey.valueOf(consoleInput);
 
@@ -131,13 +132,13 @@ public class Game {
                 break;
             case QUIT:
                 return false;
-            default:
-                throw new RuntimeException("Bad input!" + (char) consoleInput);
+            case UNKNOWN:
+                break;
         }
 
 
         try {
-            Thread.sleep((long)Config.getFloat("fFrameSleepTime") * 1000);
+            Thread.sleep((long) Config.getFloat("fFrameSleepTime") * 1000);
         } catch (InterruptedException e) {
             throw new RuntimeException("Interrupted during frame sleep");
         }

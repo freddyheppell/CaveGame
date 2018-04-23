@@ -1,14 +1,11 @@
 package com.freddyheppell.cavegame.world;
 
-import com.freddyheppell.cavegame.entities.Entity;
 import com.freddyheppell.cavegame.world.cells.Cell;
 import com.freddyheppell.cavegame.world.coord.CoordinateProperties;
 import com.freddyheppell.cavegame.world.coord.RegionCoordinate;
 import com.freddyheppell.cavegame.world.coord.WorldCoordinate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.util.HashMap;
 
 public class World {
     private RegionManager regionManager;

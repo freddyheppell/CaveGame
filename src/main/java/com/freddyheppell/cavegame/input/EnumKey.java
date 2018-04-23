@@ -14,7 +14,10 @@ public enum EnumKey {
     OPEN_INV('i'),
 
     // MISC
-    QUIT('q');
+    QUIT('q'),
+
+    // UNKNOWN
+    UNKNOWN(Character.MIN_VALUE);
 
     /**
      * The integer representation of the character
@@ -50,6 +53,6 @@ public enum EnumKey {
             return map.get(key);
         }
 
-        throw new RuntimeException("Key not found!");
+        return UNKNOWN;
     }
 }
