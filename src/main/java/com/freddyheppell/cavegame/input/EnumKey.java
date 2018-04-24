@@ -17,6 +17,7 @@ public enum EnumKey {
     QUIT('x'),
 
     // UNKNOWN
+    // There's no character that is actually of this value
     UNKNOWN(Character.MIN_VALUE);
 
     /**

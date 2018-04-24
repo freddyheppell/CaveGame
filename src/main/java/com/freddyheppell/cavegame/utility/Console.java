@@ -7,6 +7,7 @@ import org.omg.SendingContext.RunTime;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Console {
@@ -146,13 +147,25 @@ public class Console {
     }
 
     public static int getIntRange(int min, int max) throws IOException {
-        String character = readLine();
-        int enteredInt = Integer.valueOf(character);
+        int enteredInt = min - 1;
 
-        if (enteredInt >= min && enteredInt <= max) {
-            return enteredInt;
+        while (enteredInt < min || enteredInt > max) {
+            String character = readLine();
+
+            enteredInt = Integer.valueOf(character);
         }
 
-        return -1;
+        return enteredInt;
+    }
+
+    public static int menu(String[] options) throws IOException {
+        for (int i = 0; i < options.length; i++) {
+            System.out.println((i + 1) + ". " + options[i]);
+        }
+        System.out.println();
+        System.out.print("Enter your choice: ");
+
+        // Subtract one because the displayed list starts at 1 but the actual list starts at 0
+        return getIntRange(1, options.length) - 1;
     }
 }

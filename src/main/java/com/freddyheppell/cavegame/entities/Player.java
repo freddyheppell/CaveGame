@@ -78,15 +78,6 @@ public class Player extends Entity {
         return validCoords;
     }
 
-    /**
-     * Add a single item to the inventory
-     *
-     * @param item The single item
-     */
-    public void addItem(Item item) {
-        inventory.add(item);
-    }
-
     public void showInventory() throws IOException {
         boolean showInv = true;
 
@@ -145,8 +136,10 @@ public class Player extends Entity {
                         continue;
                     }
 
-                    if (newIndex < (inventory.size() + 1)) {
+                    if (newIndex < (inventory.size() + 1) && newIndex > 0) {
                         // Check if it's within range
+                        // This doesn't use the dedicated function because there are other criteria
+                        // that could cause an input to be invalid
 
                         // Subtract one because the inventory list starts at 0
                         newIndex--;
@@ -183,7 +176,7 @@ public class Player extends Entity {
     public void addItems(ArrayList<Item> items) {
         for (Item item :
                 items) {
-            item.onItemSelect();
+            item.onItemSelect(); // Execute this item's select event
             inventory.add(item);
         }
 
@@ -193,8 +186,9 @@ public class Player extends Entity {
     /**
      * Stack items in the inventory that can be stacked
      */
-    public void restack() {
+    private void restack() {
         // Store the types of each item and the index of where it was first found
+        // Primitive ints cannot be used for lists or maps, so the Integer class must be used instead
         Map<String, Integer> typeStrings = new HashMap<>();
         ArrayList<Integer> toRemove = new ArrayList<>();
 
@@ -217,9 +211,9 @@ public class Player extends Entity {
         }
 
         // Now remove the entries to be removed
-        for (int i = 0; i < toRemove.size(); i++) {
+        for (Integer aToRemove : toRemove) {
             // This has to be casted back to a primitive int
-            inventory.remove((int)toRemove.get(i));
+            inventory.remove((int) aToRemove);
         }
     }
 

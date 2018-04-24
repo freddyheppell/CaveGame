@@ -30,27 +30,47 @@ public class Game {
     public Game() throws IOException {
         ItemRegistry.getInstance().doRegister();
 
-        System.out.println("CaveGame");
-        System.out.println("1. Load Game");
-        System.out.println("2. Create Game");
-        System.out.print("\n> ");
-        int option = Console.readChar();
+        mainMenu();
+    }
 
-        if (option == 1) {
-            //
+    /**
+     * Show the user the main menu
+     *
+     * @throws IOException when a filesystem exception is encountered
+     */
+    public void mainMenu() throws IOException {
+        Console.clearScreen();
+        System.out.println("CaveGame");
+
+        int menuChoice = Console.menu(new String[]{"Load Game", "Create Game"});
+
+        Console.clearScreen();
+
+        if (menuChoice == 0) {
+            // List Existing Games
+            System.out.println("Select a world to load\n");
+            String[] worlds = SaveManager.getWorlds();
+            int choice = Console.menu(worlds);
+            this.gameName = worlds[choice];
+        } else if (menuChoice == 1) {
+            // Create a new game
+            System.out.println("Enter the game name");
+            System.out.print(">");
+            this.gameName = Console.readLine();
         }
 
-        Scanner scanner = new Scanner(System.in);
-        System.out.print(">");
-        this.gameName = "";
-
+        // Get the save folder
+        // This will create the folder if it doesn't exist
         File saveDir = SaveManager.getSaveFolder(gameName);
+        // This will be null if the world doesn't have a JSON file, possibly because the world was just created
         Map<String, String> configMap = SaveManager.loadWorld(saveDir);
 
         if (configMap != null) {
             // This world has previously been created
+            // Retrieve the seed
             this.seedManager = new SeedManager(Config.getString(configMap.get("worldSeed")));
 
+            // Check if the configuration matches
             // If the hash doesn't match, alert the user
             if (!configMap.get("configurationHash").equals(Config.getConfigurationHash())) {
                 System.out.println("!!! WARNING !!!");
@@ -60,13 +80,19 @@ public class Game {
                 Console.requestEnter();
             }
         } else {
-            System.out.println("Enter the world seed:");
+            // The world hasn't previously been created, so ask the user for the seed
+            System.out.println("Enter the world seed");
+            System.out.print("> ");
             String seedString = Console.readLine();
             this.seedManager = new SeedManager(seedString);
         }
 
+        // Now create the world with that data
+        // A new world is always created because the only data that's persisted is the two parameters passed through
+        // Everything else doesn't need to be saved
         this.world = new World(this.seedManager, this.gameName);
 
+        // Now overwrite the world.json file with these parameters
         saveWorld();
     }
 
@@ -98,7 +124,7 @@ public class Game {
         }
     }
 
-    public void saveWorld() {
+    private void saveWorld() {
         File saveDir = SaveManager.getSaveFolder(gameName);
 
         try {

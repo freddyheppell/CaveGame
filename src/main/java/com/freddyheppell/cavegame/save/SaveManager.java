@@ -19,6 +19,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Map;
 
 public class SaveManager {
@@ -87,22 +88,32 @@ public class SaveManager {
     }
 
     /**
-     * Get the File representation of the save folder
+     * Get the File representation of the save folder for a world.
+     * This creates the directory if it does not exist currently.
      *
      * @param saveName The name of the save
      * @return A File representation of the save folder
      */
     public static File getSaveFolder(String saveName) {
-        String path = getSavePath();
         // First check if the root folder (i.e. the CaveGame folder) exists
-        File rootFolder = new File(path);
+        File rootFolder = getRoot();
         // Then check if the specific save folder exists
-        File saveFolder = new File(path, saveName);
+        File saveFolder = new File(rootFolder, saveName);
         if (checkSaveFolder(rootFolder) && checkSaveFolder(saveFolder)) {
             return saveFolder;
         } else {
             throw new RuntimeException("Could not load save folder!");
         }
+    }
+
+    /**
+     * Get the root folder where all data should be stored
+     * This is in Application Support on macOS, Appdata\Roaming on Windows
+     *
+     * @return
+     */
+    public static File getRoot() {
+        return new File(getSavePath());
     }
 
     /**
@@ -225,6 +236,20 @@ public class SaveManager {
             logger.info("World file does not exist");
             return null;
         }
+    }
 
+    public static String[] getWorlds() {
+        return getRoot().list((current, name) -> {
+            File thisItem = new File(current, name);
+
+            if (thisItem.isDirectory()) {
+                // This is a directory
+                // Check if it contains a world.json
+
+                return new File(thisItem, "world.json").exists();
+            }
+
+            return false;
+        });
     }
 }
