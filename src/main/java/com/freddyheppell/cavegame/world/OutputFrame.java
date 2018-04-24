@@ -1,5 +1,6 @@
 package com.freddyheppell.cavegame.world;
 
+import com.freddyheppell.cavegame.config.Config;
 import com.freddyheppell.cavegame.entities.Entity;
 import com.freddyheppell.cavegame.entities.Player;
 import com.freddyheppell.cavegame.world.coord.WorldCoordinate;
@@ -42,11 +43,15 @@ public class OutputFrame {
                 outputString.append(player);
             } else if (world.getRegion(worldCoordinate.getRegionCoordinate()).isEntityAt(worldCoordinate)) {
                 Entity entity = world.getRegion(worldCoordinate.getRegionCoordinate()).getEntityAt(worldCoordinate);
-                outputString.append(entity);
-            } else if (world.getCell(worldCoordinate).listener != null){
-                outputString.append("!");
-            }
-            else{
+
+                if (entity.alive) {
+                    // Only show the entity if it is alive
+                    outputString.append(entity);
+                } else {
+                    // Just show a blank space otherwise
+                    outputString.append(" ");
+                }
+            } else {
                 // Otherwise show the cell's character
                 outputString.append(world.getCell(worldCoordinate));
             }
@@ -54,6 +59,10 @@ public class OutputFrame {
             outputString.append("  ");
 
             lastY = worldCoordinate.wy;
+        }
+
+        if (Config.getBoolean("bShowDebugInfo")) {
+            outputString.append("\n").append(player.getLocation());
         }
 
         return outputString.toString();

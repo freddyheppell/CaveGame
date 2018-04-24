@@ -12,7 +12,9 @@ public class CaveGame {
 
     static {
         try {
+            // Load the application's configuration
             Config.loadConfiguration();
+            // and create the game instance
             game = new Game();
         } catch (IOException e) {
             e.printStackTrace();
@@ -21,10 +23,13 @@ public class CaveGame {
     }
 
     public static void main(String[] args) {
+        // Should the game loop again
         boolean shouldContinue = true;
         try {
+            // Initialise the player instance
             game.initPlayer();
             while (shouldContinue) {
+                // Loop the game until it returns a false value, which means the user wants to quit
                 shouldContinue = game.gameLoop();
             }
             Console.clearScreen();

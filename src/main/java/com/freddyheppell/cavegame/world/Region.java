@@ -99,7 +99,7 @@ public class Region {
             int x = random.nextInt(Config.getInt("iRegionSize"));
             int y = random.nextInt(Config.getInt("iRegionSize"));
 
-            if (!cells[x][y].canSpawn()) {
+            if (cells[x][y].canSpawn()) {
                 CellCoordinate cellCoordinate = new CellCoordinate(x, y);
                 return WorldCoordinate.fromRegionAndCell(regionCoordinate, cellCoordinate);
             }
@@ -212,6 +212,16 @@ public class Region {
         logger.debug(regionCoordinate);
         logger.debug(entities);
         return entities.get(entityCoordinates.indexOf(worldCoordinate));
+    }
+
+    /**
+     * Set the entity at this coordinate.
+     *
+     * @param worldCoordinate the location of the entity
+     * @param entity the new value
+     */
+    public void setEntityAt(WorldCoordinate worldCoordinate, Entity entity) {
+        entities.set(entityCoordinates.indexOf(worldCoordinate), entity);
     }
 
     /**

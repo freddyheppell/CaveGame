@@ -15,10 +15,23 @@ import java.util.List;
 import java.util.Queue;
 
 public abstract class Entity {
-    protected transient List<WorldCoordinate> visibleCells;
+    /**
+     * Cells that are visible to the entity
+     */
+    private transient List<WorldCoordinate> visibleCells;
     private float health;
+    /**
+     * If the entity is currently alive
+     * This is safe to use outside of combat
+     */
     public boolean alive = true;
+    /**
+     * The maximum amount of armour the player has
+     */
     private Integer armour;
+    /**
+     * The list of armour changes to apply to the player
+     */
     private Queue<Integer> armourChange;
     private static final Logger logger = LogManager.getLogger();
 
@@ -53,14 +66,14 @@ public abstract class Entity {
     public void calculateVisibleCells(WorldCoordinate location) {
         this.visibleCells = new ArrayList<>();
         int r = getViewDistance();
-        int rSq = r*r;
+        int rSq = r * r;
         float correction = r * 0.8f;
         float limit = rSq + correction;
 
 
         for (int y = -r; y <= r; y++) {
             for (int x = -r; x <= r; x++) {
-                if ((x*x) + (y*y) <= limit) {
+                if ((x * x) + (y * y) <= limit) {
                     // Add the origin coordinates
                     visibleCells.add(new WorldCoordinate(location.wx + x, location.wy + y));
                 }
@@ -80,8 +93,8 @@ public abstract class Entity {
     private void registerVisibleCells(WorldCoordinate location) {
         logger.debug("Registering " + visibleCells.size() + " visible cells");
 
-        for (WorldCoordinate visibleCell:
-             visibleCells) {
+        for (WorldCoordinate visibleCell :
+                visibleCells) {
             CaveGame.game.registerEvent(location, visibleCell);
         }
 
@@ -106,6 +119,12 @@ public abstract class Entity {
         return health;
     }
 
+    /**
+     * Get whether the health of the entity has enough health to be alive
+     * Note that this should only be used within combat, as health is reset afterwards
+     *
+     * @return
+     */
     public boolean isAlive() {
         return health > 0;
     }

@@ -65,6 +65,7 @@ public class World {
      * @return If Line of Sight could be found
      */
     public boolean hasLineOfSight(WorldCoordinate coordinate0, WorldCoordinate coordinate1) {
+        logger.debug("Checking line of sight between " + coordinate0 + " & " + coordinate1);
         if (Math.abs(coordinate0.wy - coordinate1.wy) > Math.abs(coordinate0.wx - coordinate1.wx)) {
             // Swap the coordinates within each pair
             coordinate0 = new WorldCoordinate(coordinate0.wy, coordinate0.wx);
@@ -101,6 +102,7 @@ public class World {
             }
 
             if (getCell(checkCoordinate).isBlocking()) {
+                logger.debug("Cell " + checkCoordinate + " is blocking! Type " + getCell(checkCoordinate).getClass());
                 return false;
             }
 

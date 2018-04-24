@@ -1,11 +1,13 @@
 package com.freddyheppell.cavegame.items;
 
+import com.freddyheppell.cavegame.config.Config;
 import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
 import com.rits.cloning.Cloner;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class ItemRegistry {
     private static ItemRegistry itemRegistry = new ItemRegistry();
@@ -131,5 +133,21 @@ public class ItemRegistry {
 
         // Then generate the total weighting
         generateWeighting();
+    }
+
+    public ArrayList<Item> generateReward() {
+        ArrayList<Item> reward = new ArrayList<>();
+        Random random = new Random();
+
+        // This prevents 0 from being generated
+        // nextInt generates from 0 to n, we want 1 to n. By generating from 0 to (n-1) and adding 1, we get from 1 to n
+        int itemCount = random.nextInt(Config.getInt("iChestMaxItems") - 1) + 1;
+
+        for (int i = 0; i < itemCount; i++) {
+            // Now pick itemCount number of items
+            reward.add(ItemRegistry.getInstance().selectItem());
+        }
+
+        return reward;
     }
 }

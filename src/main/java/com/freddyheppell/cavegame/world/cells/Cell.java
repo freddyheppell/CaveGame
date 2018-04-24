@@ -29,7 +29,7 @@ public abstract class Cell {
      */
     public boolean canSpawn() {
         // Cells with a trigger are not valid for spawning
-        return isSpawnAllowed() && !isBlocking() && listener == null;
+        return isSpawnAllowed()  && listener == null;
     }
 
     /**

@@ -15,7 +15,7 @@ public class ChestCell extends Cell {
     /**
      * The items to be given to the player
      */
-    public ArrayList<Item> reward = new ArrayList<>();
+    private ArrayList<Item> reward;
     /**
      * If the chest has been claimed yet or not
      */
@@ -59,15 +59,6 @@ public class ChestCell extends Cell {
      * Generate the contents of a chest cell
      */
     public void generate() {
-        Random random = new Random();
-
-        // This prevents 0 from being generated
-        // nextInt generates from 0 to n, we want 1 to n. By generating from 0 to (n-1) and adding 1, we get from 1 to n
-        int itemCount = random.nextInt(Config.getInt("iChestMaxItems") - 1) + 1;
-
-        for (int i = 0; i < itemCount; i++) {
-            // Now pick itemCount number of items
-            reward.add(ItemRegistry.getInstance().selectItem());
-        }
+        reward = ItemRegistry.getInstance().generateReward();
     }
 }

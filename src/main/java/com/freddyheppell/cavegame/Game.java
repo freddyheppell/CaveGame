@@ -1,8 +1,8 @@
 package com.freddyheppell.cavegame;
 
 import com.freddyheppell.cavegame.config.Config;
-import com.freddyheppell.cavegame.input.EnumKey;
 import com.freddyheppell.cavegame.entities.Player;
+import com.freddyheppell.cavegame.input.EnumKey;
 import com.freddyheppell.cavegame.items.ItemRegistry;
 import com.freddyheppell.cavegame.save.SaveManager;
 import com.freddyheppell.cavegame.utility.Console;
@@ -17,7 +17,6 @@ import org.apache.logging.log4j.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
-import java.util.Scanner;
 
 public class Game {
     public World world;
@@ -82,7 +81,7 @@ public class Game {
         } else {
             // The world hasn't previously been created, so ask the user for the seed
             System.out.println("Enter the world seed");
-            System.out.print("> ");
+            System.out.print(">");
             String seedString = Console.readLine();
             this.seedManager = new SeedManager(seedString);
         }
@@ -96,6 +95,11 @@ public class Game {
         saveWorld();
     }
 
+    /**
+     * Initialise the player, either from disk or created newly
+     *
+     * @throws IOException If an exception is encountered reading the filesystem
+     */
     public void initPlayer() throws IOException {
         // Loading Player
         File saveDir = SaveManager.getSaveFolder(gameName);
@@ -111,7 +115,7 @@ public class Game {
     }
 
     /**
-     * Save the player instance
+     * Save the player instance to disk
      */
     public void savePlayer() {
         File saveDir = SaveManager.getSaveFolder(gameName);
@@ -124,6 +128,9 @@ public class Game {
         }
     }
 
+    /**
+     * Save the world data file to disk
+     */
     private void saveWorld() {
         File saveDir = SaveManager.getSaveFolder(gameName);
 
@@ -135,6 +142,9 @@ public class Game {
         }
     }
 
+    /**
+     * @return the world instance
+     */
     public World getWorld() {
         return world;
     }
@@ -214,6 +224,9 @@ public class Game {
         return true;
     }
 
+    /**
+     * @param player The new player instance
+     */
     public void setPlayer(Player player) {
         this.player = player;
     }

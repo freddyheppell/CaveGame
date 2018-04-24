@@ -198,7 +198,7 @@ public class Player extends Entity {
                 // This is a stackable item that doesn't exist on the types list
                 // Add it to the types list
                 typeStrings.put(item.getStackName(), i);
-            } else if (item.isStackable() && typeStrings.containsKey(item.getStackName())){
+            } else if (item.isStackable() && typeStrings.containsKey(item.getStackName())) {
                 // This is a stackable item and already exists in the types list
                 // So stack it with the previous instance
                 int firstI = typeStrings.get(item.getStackName());
@@ -235,17 +235,33 @@ public class Player extends Entity {
             // Check if the player has LoS to the entity
             logger.info("Checking LoS");
             if (world.hasLineOfSight(newCoordinate, triggerCoordinate)) {
+                logger.info("Line of sight found");
                 // If it does, begin combat
+                Console.clearScreen();
                 Entity entity = world.getRegion(triggerCoordinate.getRegionCoordinate()).getEntityAt(triggerCoordinate);
+
+                if (!entity.alive) {
+                    // If the entity is dead, don't start combat
+                    return;
+                }
+
                 CombatManager combatManager = new CombatManager(this, entity);
                 combatManager.simulate();
 
                 CaveGame.game.setPlayer(combatManager.getPlayer());
 
-                if (!combatManager.getEnemy().isAlive()) {
+                if (!combatManager.getEnemy().alive) {
                     // If the enemy has died, remove it
-                    return;
+                    world.getRegion(triggerCoordinate.getRegionCoordinate()).setEntityAt(triggerCoordinate, combatManager.getEnemy());
+
+                    // Generate a reward for the player
+                    inventory.addAll(ItemRegistry.getInstance().generateReward());
+                    // and restack their inventory
+                    restack();
                 }
+
+            } else {
+                logger.info("Line of sight not found");
             }
         }
 

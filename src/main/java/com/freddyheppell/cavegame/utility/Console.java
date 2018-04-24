@@ -2,12 +2,10 @@ package com.freddyheppell.cavegame.utility;
 
 import biz.source_code.utils.RawConsoleInput;
 import com.freddyheppell.cavegame.config.Config;
-import org.omg.SendingContext.RunTime;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Console {
@@ -105,28 +103,14 @@ public class Console {
         return br.readLine();
     }
 
-//    /**
-//     * @return The instance of the terminal
-//     */
-//    private static Terminal getTerminal() {
-//        try {
-//            return TerminalBuilder.builder().build();
-//        } catch (IOException e) {
-//            throw new RuntimeException("Unable to get terminal instance!");
-//        }
-//    }
-
     /**
      * Get the usable width of the terminal
      *
      * @return The usable width of the terminal
      */
     public static int getWidth() {
-        // This number of cells appears to the left and right of the player (divide by 2)
-        // and each cell consists of 3 characters (divide by 3). Therefore divide by 6.
-        // Some terminals will round up partial character widths, so subtract 1 to be safe
-//        return Math.floorDiv(getTerminal().getWidth() - 1, 6) - 1;
-        return 10;
+        // Return a hardcoded value to avoid issues with detection library
+        return 24;
     }
 
     /**
@@ -135,18 +119,27 @@ public class Console {
      * @return The usable width of the terminal
      */
     public static int getHeight() {
-        // This number of cells appears above and below the player (divide by 2)
-        // Subtract two lines for the input prompt and the line created upon pressing enter
-//        return Math.floorDiv(getTerminal().getHeight() - 1, 2) - 2;
-        return 10;
+        // Return a hardcoded value to avoid issues with detection library
+        return 15;
     }
 
+    /**
+     * Await the user pressing ENTER, discarding any input
+     */
     public static void requestEnter() {
         Scanner sc = new Scanner(System.in);
         sc.nextLine();
     }
 
-    public static int getIntRange(int min, int max) throws IOException {
+    /**
+     * Get the user to enter an interger in this range
+     *
+     * @param min The lower (inclusive) bound of the range
+     * @param max The upper (inclusive) bound of the range
+     * @return The integer the user entered
+     * @throws IOException If an exception was encountered binding to stdin
+     */
+    private static int getIntRange(int min, int max) throws IOException {
         int enteredInt = min - 1;
 
         while (enteredInt < min || enteredInt > max) {
@@ -158,6 +151,13 @@ public class Console {
         return enteredInt;
     }
 
+    /**
+     * Present the user with a menu of options and ask that they pick one
+     *
+     * @param options An array of options
+     * @return The index within the array that the user selcted
+     * @throws IOException If an error is encountered binding to stdin
+     */
     public static int menu(String[] options) throws IOException {
         for (int i = 0; i < options.length; i++) {
             System.out.println((i + 1) + ". " + options[i]);
