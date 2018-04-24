@@ -6,11 +6,6 @@ import java.util.Random;
 public class GoldItem extends Item {
 
     /**
-     * The gold value of this item
-     */
-    public int value;
-
-    /**
      * Item with an unspecified name, to be used with custom display name generators
      *
      * @param dropWeight Integer weight for random selection
@@ -21,14 +16,20 @@ public class GoldItem extends Item {
 
     @Override
     public String getDisplayName() {
-        return String.format("Gold (%d G)", value);
+        return String.format("Gold (%d G)", quantity);
     }
 
     /**
      * When the gold is selected as a reward, its value must be determined
+     * TODO implement this
      */
     @Override
     public void onItemSelect() {
-        this.value = new Random().nextInt(10);
+        this.quantity = new Random().nextInt(10);
+    }
+
+    @Override
+    public boolean isStackable() {
+        return true;
     }
 }

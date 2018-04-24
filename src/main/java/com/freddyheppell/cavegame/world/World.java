@@ -10,10 +10,13 @@ import org.apache.logging.log4j.Logger;
 public class World {
     private RegionManager regionManager;
     private static final Logger logger = LogManager.getLogger();
-
+    private String worldName;
+    private long worldSeed;
 
     public World(SeedManager seedManager, String worldName) {
         this.regionManager = new RegionManager(worldName, seedManager);
+        this.worldName = worldName;
+        this.worldSeed = seedManager.getWorldSeed();
     }
 
 
@@ -24,6 +27,14 @@ public class World {
     public Cell getCell(WorldCoordinate worldCoordinate) {
         Region region = getRegion(worldCoordinate.getRegionCoordinate());
         return region.getCellIfExists(worldCoordinate);
+    }
+
+    public String getWorldName() {
+        return worldName;
+    }
+
+    public long getWorldSeed() {
+        return worldSeed;
     }
 
     public WorldCoordinate getSpawnLocation() {

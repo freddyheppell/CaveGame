@@ -7,15 +7,19 @@ import com.freddyheppell.cavegame.items.Item;
 import com.freddyheppell.cavegame.items.ItemRegistry;
 import com.freddyheppell.cavegame.utility.Console;
 import com.freddyheppell.cavegame.world.Region;
+import com.freddyheppell.cavegame.world.World;
 import com.freddyheppell.cavegame.world.cells.*;
 import com.freddyheppell.cavegame.world.coord.RegionCoordinate;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.*;
+import java.lang.reflect.Type;
+import java.util.Map;
 
 public class SaveManager {
     private static final Logger logger = LogManager.getLogger();
@@ -38,6 +42,7 @@ public class SaveManager {
             .registerSubtype(Monster.class, "m");
 
     private static final String PLAYER_FILE_NAME = "player.json";
+    private static final String WORLD_FILE_NAME = "world.json";
 
     /**
      * Get the file name of a region at the given coordinates
@@ -121,6 +126,9 @@ public class SaveManager {
         return new File(saveDir, PLAYER_FILE_NAME);
     }
 
+    public static File getWorldFile(File saveDir) {
+        return new File(saveDir, WORLD_FILE_NAME);
+    }
 
     /**
      * Save a region to disk
@@ -188,11 +196,35 @@ public class SaveManager {
      * @throws FileNotFoundException If the player file does not exist
      */
     public static Player loadPlayer(File saveDir) throws FileNotFoundException {
-        logger.info("Saving player");
+        logger.info("Loading player");
         FileReader playerReader = new FileReader(getPlayerFile(saveDir));
         Gson gson = new GsonBuilder().registerTypeAdapterFactory(ITEM_ADAPTER_FACTORY).create();
         Player player = gson.fromJson(new BufferedReader(playerReader), Player.class);
-        logger.info("Player saved");
+        logger.info("Player loaded");
         return player;
+    }
+
+    public static void saveWorld(File saveLocation, World world) throws IOException {
+        Gson gson = new GsonBuilder().registerTypeAdapter(World.class, new WorldSerialiser()).disableHtmlEscaping().create();
+        Writer writer = new FileWriter(getWorldFile(saveLocation), false);
+        gson.toJson(world, writer);
+        writer.close();
+    }
+
+    public static Map<String, String> loadWorld(File saveDir) {
+        logger.info("Loading world");
+        Type type = new TypeToken<Map<String, String>>(){}.getType();
+        try {
+            FileReader worldReader = new FileReader(getWorldFile(saveDir));
+            Gson gson = new GsonBuilder().disableHtmlEscaping().create();
+            Map<String, String> worldMap= gson.fromJson(new BufferedReader(worldReader), type);
+            logger.info("World loaded");
+
+            return worldMap;
+        } catch (FileNotFoundException e) {
+            logger.info("World file does not exist");
+            return null;
+        }
+
     }
 }

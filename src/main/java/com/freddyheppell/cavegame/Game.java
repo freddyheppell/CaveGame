@@ -16,6 +16,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 import java.util.Scanner;
 
 public class Game {
@@ -26,17 +27,47 @@ public class Game {
 
     private static final Logger logger = LogManager.getLogger();
 
-    public Game() {
+    public Game() throws IOException {
         ItemRegistry.getInstance().doRegister();
-        this.seedManager = new SeedManager(Config.getString("sWorldSeed"));
 
-        System.out.println("CaveGame Temporary Main Menu");
-        System.out.println("Enter the name of the world to create or load");
+        System.out.println("CaveGame");
+        System.out.println("1. Load Game");
+        System.out.println("2. Create Game");
+        System.out.print("\n> ");
+        int option = Console.readChar();
+
+        if (option == 1) {
+            //
+        }
+
         Scanner scanner = new Scanner(System.in);
         System.out.print(">");
-        this.gameName = scanner.nextLine();
+        this.gameName = "";
 
-        this.world = new World(seedManager, this.gameName);
+        File saveDir = SaveManager.getSaveFolder(gameName);
+        Map<String, String> configMap = SaveManager.loadWorld(saveDir);
+
+        if (configMap != null) {
+            // This world has previously been created
+            this.seedManager = new SeedManager(Config.getString(configMap.get("worldSeed")));
+
+            // If the hash doesn't match, alert the user
+            if (!configMap.get("configurationHash").equals(Config.getConfigurationHash())) {
+                System.out.println("!!! WARNING !!!");
+                System.out.println("The current configuration has changed since this world was created.");
+                System.out.println("This could cause world generation issues, or prevent the world from loading at all");
+                System.out.println("Press ENTER to accept this");
+                Console.requestEnter();
+            }
+        } else {
+            System.out.println("Enter the world seed:");
+            String seedString = Console.readLine();
+            this.seedManager = new SeedManager(seedString);
+        }
+
+        this.world = new World(this.seedManager, this.gameName);
+
+        saveWorld();
     }
 
     public void initPlayer() throws IOException {
@@ -64,6 +95,17 @@ public class Game {
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException("Unable to resave player!");
+        }
+    }
+
+    public void saveWorld() {
+        File saveDir = SaveManager.getSaveFolder(gameName);
+
+        try {
+            SaveManager.saveWorld(saveDir, this.world);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Unable to save world!");
         }
     }
 

@@ -51,7 +51,6 @@ public abstract class Entity {
      * @param location The current location of the entity
      */
     public void calculateVisibleCells(WorldCoordinate location) {
-
         this.visibleCells = new ArrayList<>();
         int r = getViewDistance();
         int rSq = r*r;

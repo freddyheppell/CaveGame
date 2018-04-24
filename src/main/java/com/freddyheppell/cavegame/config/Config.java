@@ -5,7 +5,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.StandardCopyOption;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 import java.util.Properties;
 
 /**
@@ -116,5 +120,25 @@ public class Config {
      */
     public static boolean getBoolean(String propertyName) {
         return Boolean.valueOf(getString(propertyName));
+    }
+
+    public static String getConfigurationHash() {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+
+            byte[] byteHash = Base64.getEncoder().encode(
+                    digest.digest(properties.toString().getBytes(StandardCharsets.UTF_8))
+            );
+
+            return new String(byteHash);
+        } catch (NoSuchAlgorithmException e) {
+            // SHA-256 is required to be in all Java implementations,
+            // so this is unlikely to happen
+            throw new RuntimeException("Unable to get hash algorithm");
+        }
+    }
+
+    public static boolean verifyHash(String otherHash) {
+        return getConfigurationHash() == otherHash;
     }
 }

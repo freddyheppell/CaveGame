@@ -8,6 +8,11 @@ public class Item {
     private transient int dropWeight;
 
     /**
+     * The gold value of this item
+     */
+    public int quantity;
+
+    /**
      * Item with an unspecified name, to be used with custom display name generators
      *
      * @param dropWeight Integer weight for random selection
@@ -44,6 +49,15 @@ public class Item {
      * @return Boolean if it can be equipped
      */
     public boolean isEquippable() {
+        return false;
+    }
+
+    /**
+     * Should the item be stacked with instances of itself
+     *
+     * @return Should it be stacked
+     */
+    public boolean isStackable() {
         return false;
     }
 

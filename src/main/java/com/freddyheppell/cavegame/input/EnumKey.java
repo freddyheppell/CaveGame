@@ -14,7 +14,7 @@ public enum EnumKey {
     OPEN_INV('i'),
 
     // MISC
-    QUIT('q'),
+    QUIT('x'),
 
     // UNKNOWN
     UNKNOWN(Character.MIN_VALUE);

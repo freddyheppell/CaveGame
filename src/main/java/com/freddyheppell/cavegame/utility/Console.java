@@ -2,6 +2,7 @@ package com.freddyheppell.cavegame.utility;
 
 import biz.source_code.utils.RawConsoleInput;
 import com.freddyheppell.cavegame.config.Config;
+import org.omg.SendingContext.RunTime;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -142,5 +143,16 @@ public class Console {
     public static void requestEnter() {
         Scanner sc = new Scanner(System.in);
         sc.nextLine();
+    }
+
+    public static int getIntRange(int min, int max) throws IOException {
+        String character = readLine();
+        int enteredInt = Integer.valueOf(character);
+
+        if (enteredInt >= min && enteredInt <= max) {
+            return enteredInt;
+        }
+
+        return -1;
     }
 }

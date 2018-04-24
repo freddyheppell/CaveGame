@@ -18,7 +18,9 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Player extends Entity {
     private ArrayList<Item> inventory = new ArrayList<>();
@@ -97,7 +99,7 @@ public class Player extends Entity {
 
             for (int i = 0; i < inventory.size(); i++) {
                 // For each item, append it's human readable number and name
-                invString.append(i+1).append(": ")
+                invString.append(i + 1).append(": ")
                         .append(inventory.get(i).getDisplayName());
 
                 if (i == iEquippedArmour || i == iEquippedWeapon) {
@@ -124,7 +126,7 @@ public class Player extends Entity {
                 if (inputString.charAt(0) == 'x') {
                     validString = true;
                     showInv = false;
-                } else if (inputString.charAt(0) == 'e' && inputString.length() != 1){
+                } else if (inputString.charAt(0) == 'e' && inputString.length() != 1) {
                     // If the string begins with an 'e' and contains further characters
                     // parse it as an equip request
 
@@ -179,7 +181,46 @@ public class Player extends Entity {
      * @param items An ArrayList of items
      */
     public void addItems(ArrayList<Item> items) {
-        inventory.addAll(items);
+        for (Item item :
+                items) {
+            item.onItemSelect();
+            inventory.add(item);
+        }
+
+        restack();
+    }
+
+    /**
+     * Stack items in the inventory that can be stacked
+     */
+    public void restack() {
+        // Store the types of each item and the index of where it was first found
+        Map<String, Integer> typeStrings = new HashMap<>();
+        ArrayList<Integer> toRemove = new ArrayList<>();
+
+        for (int i = 0; i < inventory.size(); i++) {
+            Item item = inventory.get(i);
+            if (item.isStackable() && !typeStrings.containsKey(item.getStackName())) {
+                // This is a stackable item that doesn't exist on the types list
+                // Add it to the types list
+                typeStrings.put(item.getStackName(), i);
+            } else if (item.isStackable() && typeStrings.containsKey(item.getStackName())){
+                // This is a stackable item and already exists in the types list
+                // So stack it with the previous instance
+                int firstI = typeStrings.get(item.getStackName());
+                Item firstItem = inventory.get(firstI);
+                firstItem.quantity += item.quantity;
+
+                // And mark it for removal
+                toRemove.add(i);
+            }
+        }
+
+        // Now remove the entries to be removed
+        for (int i = 0; i < toRemove.size(); i++) {
+            // This has to be casted back to a primitive int
+            inventory.remove((int)toRemove.get(i));
+        }
     }
 
     /**
@@ -279,7 +320,6 @@ public class Player extends Entity {
         return getEquippedArmour().getShielding();
 
     }
-
 
     public ArmourItem getEquippedArmour() {
         // Cast the item to its polymorphic type
