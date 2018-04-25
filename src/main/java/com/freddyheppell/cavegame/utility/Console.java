@@ -8,6 +8,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Scanner;
 
+/**
+ * Handles low-level interaction with the user's console
+ */
 public class Console {
     /**
      * String to clear screen on *nix systems (mac OS/Linux etc.)
@@ -15,10 +18,21 @@ public class Console {
      */
     private static final String unixClearString = "\033[H\033[2J";
 
-    public enum OperatingSystem {WINDOWS, MAC, LINUX, UNKNOWN}
+    /**
+     * An enum representing the current operating system
+     */
+    public enum OperatingSystem {
+        WINDOWS, MAC, LINUX, UNKNOWN
+    }
 
+    /**
+     * The user's operating system
+     */
     private static OperatingSystem operatingSystem;
 
+    /**
+     * A buffered reader bound to the console
+     */
     private static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
     /**
@@ -35,6 +49,7 @@ public class Console {
             } else if (os.contains("MAC")) {
                 operatingSystem = OperatingSystem.MAC;
             } else if (os.contains("NUX")) {
+                // This catches any POSIX OS, excluding mac OS
                 operatingSystem = OperatingSystem.LINUX;
             } else {
                 operatingSystem = OperatingSystem.UNKNOWN;
@@ -62,7 +77,7 @@ public class Console {
                 e.printStackTrace();
                 throw new RuntimeException("Error clearing screen");
             }
-        } else {
+        } else if (getOperatingSystem() == OperatingSystem.MAC || getOperatingSystem() == OperatingSystem.LINUX) {
             // On *nix systems, use the escape characters
             System.out.print(unixClearString);
         }
@@ -99,7 +114,7 @@ public class Console {
      * @throws IOException when an exception is encountered reading
      */
     public static String readLine() throws IOException {
-        // Use normal scanner
+        // Use the buffered reader to get the next line
         return br.readLine();
     }
 
@@ -132,7 +147,7 @@ public class Console {
     }
 
     /**
-     * Get the user to enter an interger in this range
+     * Get the user to enter an integer in this range
      *
      * @param min The lower (inclusive) bound of the range
      * @param max The upper (inclusive) bound of the range
@@ -155,7 +170,7 @@ public class Console {
      * Present the user with a menu of options and ask that they pick one
      *
      * @param options An array of options
-     * @return The index within the array that the user selcted
+     * @return The index within the array that the user selected
      * @throws IOException If an error is encountered binding to stdin
      */
     public static int menu(String[] options) throws IOException {

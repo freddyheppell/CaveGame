@@ -6,9 +6,9 @@ import com.freddyheppell.cavegame.entities.Entity;
 import com.freddyheppell.cavegame.entities.Monster;
 import com.freddyheppell.cavegame.world.cells.*;
 import com.freddyheppell.cavegame.world.coord.CellCoordinate;
+import com.freddyheppell.cavegame.world.coord.CoordinateProperties;
 import com.freddyheppell.cavegame.world.coord.RegionCoordinate;
 import com.freddyheppell.cavegame.world.coord.WorldCoordinate;
-import com.freddyheppell.cavegame.world.coord.CoordinateProperties;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -16,9 +16,23 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
+/**
+ * Represents a Region on disk
+ */
 public class Region {
+    /**
+     * A 2D array of cells in this region
+     */
     private Cell[][] cells = new Cell[Config.getInt("iRegionSize")][Config.getInt("iRegionSize")];
+
+    /**
+     * The location of this region
+     */
     private RegionCoordinate regionCoordinate;
+
+    /**
+     * The instance of random used for world generation
+     */
     private Random random;
 
     private static final Logger logger = LogManager.getLogger();
@@ -26,6 +40,7 @@ public class Region {
     // Due to serialisation constraints, the entities in the region must be stored as two lists
     // These variables are treated as a hashmap
     private ArrayList<WorldCoordinate> entityCoordinates = new ArrayList<>();
+
     private ArrayList<Entity> entities = new ArrayList<>();
 
     /**
@@ -58,10 +73,16 @@ public class Region {
         }
     }
 
+    /**
+     * @return the number of entities in this region
+     */
     public int entityCount() {
         return entityCoordinates.size();
     }
 
+    /**
+     * Generate the chests for this region
+     */
     public void generateChests() {
         for (int x = 0; x < Config.getInt("iRegionSize"); x++) {
             for (int y = 0; y < Config.getInt("iRegionSize"); y++) {
@@ -76,6 +97,9 @@ public class Region {
         }
     }
 
+    /**
+     * Generate the entities for this region
+     */
     public void generateEntities() {
         WorldCoordinate entitySpawnCell = getEntitySpawnCell();
 
@@ -83,16 +107,21 @@ public class Region {
             Entity entity = new Monster();
             entities.add(entity);
             entityCoordinates.add(entitySpawnCell);
+            // Save the region this entity is being added to
             CaveGame.game.getWorld().getRegionManager().resaveRegion(entitySpawnCell.getRegionCoordinate(), this);
 
             entity.calculateVisibleCells(entitySpawnCell);
-
 
             // Now mark the region as changed
             modified = true;
         }
     }
 
+    /**
+     * Find a cell for the entity to spawn on
+     *
+     * @return the coordinates
+     */
     public WorldCoordinate getEntitySpawnCell() {
         boolean found = false;
         while (!found) {
@@ -101,6 +130,7 @@ public class Region {
 
             if (cells[x][y].canSpawn()) {
                 CellCoordinate cellCoordinate = new CellCoordinate(x, y);
+                found = true;
                 return WorldCoordinate.fromRegionAndCell(regionCoordinate, cellCoordinate);
             }
         }
@@ -135,7 +165,7 @@ public class Region {
         Cell[] neighbours = new Cell[8];
 
         for (int i = 0; i < 8; i++) {
-            WorldCoordinate worldCoordinate = center.addTransform(CoordinateProperties.adjacentTransforms[i]);
+            WorldCoordinate worldCoordinate = center.addVector(CoordinateProperties.ADJACENT_VECTORS[i]);
             neighbours[i] = getCellIfExists(worldCoordinate);
         }
 
@@ -192,17 +222,12 @@ public class Region {
         return cells;
     }
 
-    public boolean hasEventForCoordinate(WorldCoordinate worldCoordinate) {
-        logger.debug("Checking events for " + worldCoordinate);
-
-        if (getCellIfExists(worldCoordinate).listener != null) {
-            logger.debug("Event found");
-            return true;
-        }
-        logger.debug("No event found");
-        return false;
-    }
-
+    /**
+     * Check if there is an entity at a coordinate
+     *
+     * @param worldCoordinate the coordinate to check
+     * @return whether there is an entity at this coordinate
+     */
     public boolean isEntityAt(WorldCoordinate worldCoordinate) {
         return entityCoordinates.contains(worldCoordinate);
     }
@@ -218,22 +243,9 @@ public class Region {
      * Set the entity at this coordinate.
      *
      * @param worldCoordinate the location of the entity
-     * @param entity the new value
+     * @param entity          the new value
      */
     public void setEntityAt(WorldCoordinate worldCoordinate, Entity entity) {
         entities.set(entityCoordinates.indexOf(worldCoordinate), entity);
-    }
-
-    /**
-     * DEBUG: Output a cell to System.out
-     */
-    public void output() {
-        for (Cell[] cell : cells) {
-            for (Cell aCell : cell) {
-                System.out.print(aCell);
-            }
-            System.out.print("\n");
-        }
-        System.out.println("********************************");
     }
 }

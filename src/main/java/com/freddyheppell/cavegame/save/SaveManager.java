@@ -19,9 +19,11 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.Map;
 
+/**
+ * Interacts with the filesystem to save and load the game's data
+ */
 public class SaveManager {
     private static final Logger logger = LogManager.getLogger();
 
@@ -36,20 +38,35 @@ public class SaveManager {
             .registerSubtype(RockCell.class, "r")
             .registerSubtype(ChestCell.class, "c");
 
+    /**
+     * An instance of the Runtime Adapter Factory for the Item class, which allows Gson to correctly serialise
+     * and deserialise polymorphic classes
+     */
     private static final RuntimeTypeAdapterFactory<Item> ITEM_ADAPTER_FACTORY = ItemRegistry.getInstance().getItemAdapterFactory();
 
+    /**
+     * An instance of the Runtime Adapter Factory for the Entity class, which allows Gson to correctly serialise
+     * and deserialise polymorphic classes
+     */
     private static final RuntimeTypeAdapterFactory<Entity> ENTITY_ADAPTER_FACTORY = RuntimeTypeAdapterFactory
             .of(Entity.class, "t")
             .registerSubtype(Monster.class, "m");
 
+    /**
+     * The name of the file that stores player data
+     */
     private static final String PLAYER_FILE_NAME = "player.json";
+
+    /**
+     * The name of the world information file
+     */
     private static final String WORLD_FILE_NAME = "world.json";
 
     /**
      * Get the file name of a region at the given coordinates
      *
      * @param regionCoordinate The coordinates of the region
-     * @return A string represnetation of the file in the format r(x)(y).json
+     * @return A string representation of the file in the format r(x)(y).json
      */
     private static String regionFileName(RegionCoordinate regionCoordinate) {
         return String.format("r%d,%d.json", regionCoordinate.rx, regionCoordinate.ry);
@@ -107,12 +124,12 @@ public class SaveManager {
     }
 
     /**
-     * Get the root folder where all data should be stored
-     * This is in Application Support on macOS, Appdata\Roaming on Windows
+     * Get a reference to the root folder where all data should be stored
+     * This is in Application Support on macOS, APPDATA\Roaming on Windows
      *
-     * @return
+     * @return the root folder
      */
-    public static File getRoot() {
+    private static File getRoot() {
         return new File(getSavePath());
     }
 
@@ -137,7 +154,7 @@ public class SaveManager {
         return new File(saveDir, PLAYER_FILE_NAME);
     }
 
-    public static File getWorldFile(File saveDir) {
+    private static File getWorldFile(File saveDir) {
         return new File(saveDir, WORLD_FILE_NAME);
     }
 
@@ -215,6 +232,13 @@ public class SaveManager {
         return player;
     }
 
+    /**
+     * Save the world information file
+     *
+     * @param saveLocation The world's save folder
+     * @param world        The instance of the world
+     * @throws IOException if an exception is encountered saving the file
+     */
     public static void saveWorld(File saveLocation, World world) throws IOException {
         Gson gson = new GsonBuilder().registerTypeAdapter(World.class, new WorldSerialiser()).disableHtmlEscaping().create();
         Writer writer = new FileWriter(getWorldFile(saveLocation), false);
@@ -222,29 +246,43 @@ public class SaveManager {
         writer.close();
     }
 
+    /**
+     * Load the world information file
+     *
+     * @param saveDir The world's save folder
+     * @return A String,String map of the properties
+     */
     public static Map<String, String> loadWorld(File saveDir) {
         logger.info("Loading world");
-        Type type = new TypeToken<Map<String, String>>(){}.getType();
+        // Get a reference to the type of a String,String map
+        Type type = new TypeToken<Map<String, String>>() {
+        }.getType();
         try {
             FileReader worldReader = new FileReader(getWorldFile(saveDir));
+            // HTML Escaping is disabled because it attempts to escape some base64 control characters
             Gson gson = new GsonBuilder().disableHtmlEscaping().create();
-            Map<String, String> worldMap= gson.fromJson(new BufferedReader(worldReader), type);
+            Map<String, String> worldMap = gson.fromJson(new BufferedReader(worldReader), type);
             logger.info("World loaded");
 
             return worldMap;
         } catch (FileNotFoundException e) {
+            // If the file doesn't exist, just return null
             logger.info("World file does not exist");
             return null;
         }
     }
 
+    /**
+     * Finds all valid worlds on disk
+     *
+     * @return A string array of all valid worlds
+     */
     public static String[] getWorlds() {
         return getRoot().list((current, name) -> {
             File thisItem = new File(current, name);
 
             if (thisItem.isDirectory()) {
-                // This is a directory
-                // Check if it contains a world.json
+                // If it's a directory, check if it's a valid world with a world.json file
 
                 return new File(thisItem, "world.json").exists();
             }

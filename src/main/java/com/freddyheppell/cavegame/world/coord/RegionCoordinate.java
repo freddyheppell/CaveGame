@@ -4,6 +4,9 @@ import com.freddyheppell.cavegame.config.Config;
 
 import java.util.Objects;
 
+/**
+ * Represents the coordinate of a region
+ */
 public class RegionCoordinate {
     public int rx;
     public int ry;

@@ -1,21 +1,23 @@
 package com.freddyheppell.cavegame.world.cells;
 
 import com.freddyheppell.cavegame.CaveGame;
-import com.freddyheppell.cavegame.config.Config;
 import com.freddyheppell.cavegame.entities.Player;
 import com.freddyheppell.cavegame.items.Item;
 import com.freddyheppell.cavegame.items.ItemRegistry;
 import com.freddyheppell.cavegame.world.coord.RegionCoordinate;
 
 import java.util.ArrayList;
-import java.util.Random;
 
-// Overridden methods are documented in the parent class
+/**
+ * Represents a chest cell which provides the player with a reward when they enter it
+ * Overridden methods are documented in the parent class
+ */
 public class ChestCell extends Cell {
     /**
      * The items to be given to the player
      */
     private ArrayList<Item> reward;
+
     /**
      * If the chest has been claimed yet or not
      */

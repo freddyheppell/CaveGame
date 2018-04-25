@@ -1,9 +1,10 @@
 package com.freddyheppell.cavegame.world;
 
 import com.freddyheppell.cavegame.world.coord.RegionCoordinate;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
+/**
+ * Generates seeds
+ */
 public class SeedManager {
     private String worldSeed;
 

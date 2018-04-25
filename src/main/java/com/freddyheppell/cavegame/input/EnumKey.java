@@ -3,6 +3,9 @@ package com.freddyheppell.cavegame.input;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * An enum to represent the valid commands the player can enter
+ */
 public enum EnumKey {
     // MOVEMENT
     DIR_NORTH('w'),
@@ -32,6 +35,7 @@ public enum EnumKey {
 
     static {
         for (EnumKey entry : EnumKey.values()) {
+            // Creates a reverse HashMap to allow the game to look up keypresses
             map.put(entry.charInt, entry);
         }
     }

@@ -1,20 +1,14 @@
 package com.freddyheppell.cavegame.entities;
 
-import com.freddyheppell.cavegame.world.coord.WorldCoordinate;
+/**
+ * A basic monster with small view distance and low attack damage
+ * Overridden functions are documented in the parent class
+ */
+public class Monster extends Entity {
 
-public class Monster extends Entity implements AIEntity {
-
-    /**
-     * The Entity class should not be directly instantiated
-     */
     public Monster() {
         super();
         resetStats();
-    }
-
-    @Override
-    public void onAttackZoneEnter(Player player) {
-
     }
 
     @Override

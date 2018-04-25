@@ -7,30 +7,39 @@ import com.freddyheppell.cavegame.world.coord.RegionCoordinate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * Holds the currently active regions of the game
+ */
 public class RegionManager {
     /**
      * Cached results of checking if the region exists on disk
      */
     private HashMap<RegionCoordinate, Boolean> regionLookupCache;
 
+    /**
+     * The cache of loaded regions. This is a HashMap that also preserves order, with the eldest being removed when it
+     * reaches the maximum size
+     */
     private LinkedHashMap<RegionCoordinate, Region> regionCache = new LinkedHashMap<RegionCoordinate, Region>() {
         @Override
         protected boolean removeEldestEntry(Map.Entry eldest) {
             boolean doClear = size() > Config.getInt("iRegionCacheSize");
             if (doClear) {
-                logger.debug("Clearing...");
+                logger.debug("Clearing region cache");
             }
             return doClear;
         }
     };
 
     /**
-     * The directory in which to put savedata
+     * The directory in which to put save data
      */
     private File saveDir;
 
@@ -40,7 +49,6 @@ public class RegionManager {
     private SeedManager seedManager;
 
     private static final Logger logger = LogManager.getLogger();
-
 
     public RegionManager(String worldName, SeedManager seedManager) {
         saveDir = SaveManager.getSaveFolder(worldName);
@@ -68,7 +76,14 @@ public class RegionManager {
         }
     }
 
-    public Region loadRegion(File saveDir, RegionCoordinate regionCoordinate) {
+    /**
+     * Load a region from cache or disk
+     *
+     * @param saveDir          the directory to load from
+     * @param regionCoordinate the coordinate of the region
+     * @return the Region instance
+     */
+    private Region loadRegion(File saveDir, RegionCoordinate regionCoordinate) {
         if (regionCache.containsKey(regionCoordinate)) {
             return regionCache.get(regionCoordinate);
         } else {
@@ -110,6 +125,12 @@ public class RegionManager {
         }
     }
 
+    /**
+     * Create a region and save it
+     *
+     * @param regionCoordinate The location of the region
+     * @return The Region instance
+     */
     private Region createRegion(RegionCoordinate regionCoordinate) {
         // The Region needs to be created
         Region region = new Region(seedManager.getRegionSeed(regionCoordinate), regionCoordinate);
@@ -136,10 +157,13 @@ public class RegionManager {
             throw new RuntimeException("Could not load file");
         }
     }
-    
+
+    /**
+     * Save all regions with a modified flag
+     */
     public void saveAllRegions() {
         logger.debug("Saving all");
-        for (Map.Entry<RegionCoordinate, Region> entry:
+        for (Map.Entry<RegionCoordinate, Region> entry :
                 regionCache.entrySet()) {
             if (entry.getValue().modified) {
                 logger.debug("Saving" + entry.getKey());
@@ -148,6 +172,12 @@ public class RegionManager {
         }
     }
 
+    /**
+     * Save a specific region to disk
+     *
+     * @param regionCoordinate the coordinates of the region
+     * @param region           the instance of the region
+     */
     public void resaveRegion(RegionCoordinate regionCoordinate, Region region) {
         try {
             SaveManager.saveRegion(region, SaveManager.getRegionFile(saveDir, regionCoordinate));

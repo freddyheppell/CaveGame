@@ -16,8 +16,15 @@ import java.util.Properties;
  * Loads and manages the game's configuration
  */
 public class Config {
-    public static final String CONFIG_FILE_NAME = "CaveGame.properties";
+    private static final String CONFIG_FILE_NAME = "CaveGame.properties";
+
+    private static final String CONFIG_OVERRIDE_NAME = "CaveGame.default.properties";
+
+    /**
+     * The instance of Java's properties class the configuration is loaded into
+     */
     private static Properties properties;
+
     private static final Logger logger = LogManager.getLogger();
 
 
@@ -28,35 +35,50 @@ public class Config {
      */
     public static void loadConfiguration() throws IOException {
         logger.info("Loading default configuration");
-        InputStream inDefault = Config.class.getClassLoader().getResourceAsStream("CaveGame.default.properties");
+        // Get the properties file included within the jar
+        InputStream inDefault = Config.class.getClassLoader().getResourceAsStream(CONFIG_OVERRIDE_NAME);
 
+        // Create a new instance of Properties class
         properties = new Properties();
+        // Load the default properties
         properties.load(inDefault);
         inDefault.close();
 
         logger.info("Default configuration loaded, containing {} properties", properties.size());
 
-        File overrideFile = new File(SaveManager.getSavePath(), "CaveGame.properties");
+        // Get the override file
+        File overrideFile = new File(SaveManager.getSavePath(), CONFIG_FILE_NAME);
         if (!overrideFile.exists()) {
+            // If it doesn't exist, first check that the outer folder exists
             SaveManager.checkSaveFolder(new File(SaveManager.getSavePath()));
+            // Then create the file, this returns false if it fails
             if (!overrideFile.createNewFile()) {
+                // It doesn't actually cause a problem if this file couldn't be created
+                // so just log it and return
                 logger.error("Unable to create override file template");
                 return;
             }
 
             logger.info("Copying override file template");
+            // Get the template for the override file from the jar file
             InputStream inOverride = Config.class.getClassLoader().getResourceAsStream("CaveGame.properties");
 
+            // Copy the file to its correct location
             java.nio.file.Files.copy(
                     inOverride,
                     overrideFile.toPath(),
                     StandardCopyOption.REPLACE_EXISTING);
 
+            // and close it
             inOverride.close();
 
         } else if (overrideFile.exists()) {
+            // If it does exist, load the file
             logger.info("An override file exists, loading it");
             InputStream inOverride = new FileInputStream(overrideFile);
+            // This merges the properties with the defaults
+            // New properties will be added, modified properties will be changed
+            // Everything else will remain as default
             properties.load(inOverride);
             logger.info("Loaded override file, there are now {} config options", properties.size());
         }
@@ -122,23 +144,27 @@ public class Config {
         return Boolean.valueOf(getString(propertyName));
     }
 
+    /**
+     * Get the base64 encoded SHA 256 hash of the configuration
+     *
+     * @return a base64-encoded hash
+     */
     public static String getConfigurationHash() {
         try {
+            // Use the SHA-256 hashing algorithm
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
 
+            // Encode the hash as base64
             byte[] byteHash = Base64.getEncoder().encode(
+                    // This method takes byte[], so convert the config file into a string and then into
+                    // unicode bytes
                     digest.digest(properties.toString().getBytes(StandardCharsets.UTF_8))
             );
 
             return new String(byteHash);
         } catch (NoSuchAlgorithmException e) {
-            // SHA-256 is required to be in all Java implementations,
-            // so this is unlikely to happen
+            // SHA-256 is required to be in all Java implementations, so this shouldn't happen
             throw new RuntimeException("Unable to get hash algorithm");
         }
-    }
-
-    public static boolean verifyHash(String otherHash) {
-        return getConfigurationHash() == otherHash;
     }
 }

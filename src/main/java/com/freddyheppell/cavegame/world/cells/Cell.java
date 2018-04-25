@@ -5,7 +5,15 @@ import com.freddyheppell.cavegame.entities.Player;
 import com.freddyheppell.cavegame.world.coord.RegionCoordinate;
 import com.freddyheppell.cavegame.world.coord.WorldCoordinate;
 
+/**
+ * Represents a Cell in the world
+ */
 public abstract class Cell {
+    /**
+     * The location of the entity that has set an event at this location
+     */
+    public WorldCoordinate listener = null;
+
     public abstract String toString();
 
     /**
@@ -20,7 +28,7 @@ public abstract class Cell {
      *
      * @return If the player can spawn on this cell type
      */
-    public abstract boolean isSpawnAllowed();
+    protected abstract boolean isSpawnAllowed();
 
     /**
      * Combine all spawning requirements
@@ -29,21 +37,16 @@ public abstract class Cell {
      */
     public boolean canSpawn() {
         // Cells with a trigger are not valid for spawning
-        return isSpawnAllowed()  && listener == null;
+        return isSpawnAllowed() && listener == null;
     }
 
     /**
      * Event function for when the player enters this cell
      *
-     * @param player The player instance
+     * @param player           The player instance
      * @param regionCoordinate The region in which this cell is located
      */
     public abstract void onEnter(Player player, RegionCoordinate regionCoordinate);
-
-    /**
-     * The location of the entity that has set an event at this location
-     */
-    public WorldCoordinate listener = null;
 
     /**
      * Empty constructor for serialisation

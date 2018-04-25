@@ -3,7 +3,11 @@ package com.freddyheppell.cavegame.world.cells;
 import com.freddyheppell.cavegame.entities.Player;
 import com.freddyheppell.cavegame.world.coord.RegionCoordinate;
 
-// Overridden methods are documented in the parent class
+/**
+ * Represents a cell that makes up the walls of the cave
+ * <p>
+ * Overridden methods are documented in the parent class
+ */
 public class RockCell extends Cell {
 
     @Override

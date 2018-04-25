@@ -4,26 +4,33 @@ import com.freddyheppell.cavegame.config.Config;
 import com.freddyheppell.cavegame.entities.Entity;
 import com.freddyheppell.cavegame.entities.Player;
 import com.freddyheppell.cavegame.world.coord.WorldCoordinate;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 
+/**
+ * Represents a frame to be outputted to the user
+ */
 public class OutputFrame {
+    /**
+     * The instance of the world at this point
+     */
     private World world;
-    private Player player;
 
-    private static final Logger logger = LogManager.getLogger();
+    /**
+     * The instance of the player at this point
+     */
+    private Player player;
 
     public OutputFrame(World world, Player player) {
         this.world = world;
         this.player = player;
     }
 
-//    public Cell[][] viewableCells() {
-//
-//    }
-
+    /**
+     * Turn this frame into a string
+     *
+     * @return Multiline string of current game state
+     */
     public String toString() {
         System.out.println();
 

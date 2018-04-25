@@ -45,6 +45,7 @@ public class World {
             WorldCoordinate spawnCoordinate = CoordinateProperties.getSpiralCoordinate(n);
             logger.debug("Checking {} for spawn suitability", spawnCoordinate.toString());
             if (getCell(spawnCoordinate).canSpawn()) {
+                found = true;
                 return spawnCoordinate;
             }
             n += 1;

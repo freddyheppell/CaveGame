@@ -4,12 +4,20 @@ import com.freddyheppell.cavegame.config.Config;
 
 import java.util.Objects;
 
+/**
+ * Represents a coordinate relative to the entire world
+ */
 public class WorldCoordinate {
     public int wx;
+
     public int wy;
-    public int rx;
-    public int ry;
+
+    private int rx;
+
+    private int ry;
+
     public int cx;
+
     public int cy;
 
 
@@ -28,27 +36,43 @@ public class WorldCoordinate {
         this.cy = Math.floorMod(wy, Config.getInt("iRegionSize"));
     }
 
+    /**
+     * @return the WorldCoordinate of the origin
+     */
     public static WorldCoordinate origin() {
         return new WorldCoordinate(0, 0);
     }
 
     /**
-     * Create a new coordinate that has been altered by the transform
+     * Create a new coordinate that has been altered by the vector
      *
-     * @param transform The transform to be added
-     * @return A new World Coordinate with the transform applied
+     * @param vector The vector to be added
+     * @return A new World Coordinate with the vector applied
      */
-    public WorldCoordinate addTransform(Transform transform) {
-        int newX = wx + transform.dx;
-        int newY = wy + transform.dy;
+    public WorldCoordinate addVector(Vector2 vector) {
+        int newX = wx + vector.dx;
+        int newY = wy + vector.dy;
 
         return new WorldCoordinate(newX, newY);
     }
 
-    public WorldCoordinate add(CellCoordinate cellCoordinate) {
+    /**
+     * Add a cell coordinate to this world coordinate
+     *
+     * @param cellCoordinate The coordinate to be added
+     * @return The new world coordinate
+     */
+    private WorldCoordinate add(CellCoordinate cellCoordinate) {
         return new WorldCoordinate(this.wx + cellCoordinate.cx, this.wy + cellCoordinate.cy);
     }
 
+    /**
+     * Get a world coordinate from a region coordinate and a cell coordinate
+     *
+     * @param regionCoordinate The region to work from
+     * @param cellCoordinate The cell coordinate to add
+     * @return the new world coordiante
+     */
     public static WorldCoordinate fromRegionAndCell(RegionCoordinate regionCoordinate, CellCoordinate cellCoordinate) {
         return regionCoordinate.getCornerWorldCoordinate().add(cellCoordinate);
     }
@@ -80,6 +104,9 @@ public class WorldCoordinate {
         return new RegionCoordinate(rx, ry);
     }
 
+    /**
+     * @return the cell coordinate component
+     */
     public CellCoordinate getCellCoordinate() {
         return new CellCoordinate(cx, cy);
     }

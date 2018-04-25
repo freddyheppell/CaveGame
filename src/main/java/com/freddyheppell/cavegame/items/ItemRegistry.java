@@ -9,14 +9,36 @@ import org.apache.logging.log4j.Logger;
 import java.util.ArrayList;
 import java.util.Random;
 
+/**
+ * Stores the game's items
+ */
 public class ItemRegistry {
-    private static ItemRegistry itemRegistry = new ItemRegistry();
-    private ArrayList<Item> items = new ArrayList<>();
-    private double totalWeight = 0.0d;
     private static final Logger logger = LogManager.getLogger();
 
+    /**
+     * Store the instance of this class for the singleton pattern
+     */
+    private static ItemRegistry itemRegistry = new ItemRegistry();
+
+    /**
+     * The sword the player starts with
+     */
     public SwordItem starterSword = new SwordItem(100, "Wooden", 1);
+
+    /**
+     * The armour the player starts with
+     */
     public ArmourItem starterArmour = new ArmourItem(100, "Leather", 5);
+
+    /**
+     * A list of all the registered items
+     */
+    private ArrayList<Item> items = new ArrayList<>();
+
+    /**
+     * The total weight of all items, used to randomly select according to weighting
+     */
+    private double totalWeight = 0.0d;
 
     /**
      * Empty constructor for singleton pattern
@@ -38,7 +60,7 @@ public class ItemRegistry {
      *
      * @param item An instance of Item
      */
-    public void register(Item item) {
+    private void register(Item item) {
         items.add(item);
     }
 
@@ -47,7 +69,7 @@ public class ItemRegistry {
      *
      * @param items An array of Items
      */
-    public void register(Item[] items) {
+    private void register(Item[] items) {
         for (Item item :
                 items) {
             register(item);
@@ -58,7 +80,7 @@ public class ItemRegistry {
      * Generate the total weight of the items.
      * Must be run each time the registry is changed before items can be selected
      */
-    public void generateWeighting() {
+    private void generateWeighting() {
         totalWeight = 0.0d;
         for (Item item : items) {
             totalWeight += item.getDropWeight();
@@ -71,7 +93,7 @@ public class ItemRegistry {
      *
      * @return The selected Item
      */
-    public Item selectItem() {
+    private Item selectItem() {
         Cloner cloner = new Cloner();
 
         // Weighted selection algorithm
@@ -135,11 +157,15 @@ public class ItemRegistry {
         generateWeighting();
     }
 
+    /**
+     * Generate a random reward for chests and entities
+     *
+     * @return the reward to be given
+     */
     public ArrayList<Item> generateReward() {
         ArrayList<Item> reward = new ArrayList<>();
         Random random = new Random();
 
-        // This prevents 0 from being generated
         // nextInt generates from 0 to n, we want 1 to n. By generating from 0 to (n-1) and adding 1, we get from 1 to n
         int itemCount = random.nextInt(Config.getInt("iChestMaxItems") - 1) + 1;
 

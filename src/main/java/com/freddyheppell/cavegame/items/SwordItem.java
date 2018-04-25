@@ -1,8 +1,18 @@
 package com.freddyheppell.cavegame.items;
 
-// Overridden methods are documented in the parent class
+/**
+ * Represents a sword item
+ * Overridden methods are documented in the parent class
+ */
 public class SwordItem extends Item {
+    /**
+     * The tier of the item to be displayed to the player
+     */
     private String tier;
+
+    /**
+     * The amount of damage the sword does
+     */
     private int damage;
 
     /**

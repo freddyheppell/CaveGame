@@ -2,7 +2,10 @@ package com.freddyheppell.cavegame.items;
 
 import java.util.Random;
 
-// Overridden methods are documented in the parent class
+/**
+ * Represents a gold item
+ * Overridden methods are documented in the parent class
+ */
 public class GoldItem extends Item {
 
     /**
@@ -21,7 +24,6 @@ public class GoldItem extends Item {
 
     /**
      * When the gold is selected as a reward, its value must be determined
-     * TODO implement this
      */
     @Override
     public void onItemSelect() {

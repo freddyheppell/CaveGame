@@ -6,12 +6,10 @@ import com.freddyheppell.cavegame.items.ArmourItem;
 import com.freddyheppell.cavegame.items.Item;
 import com.freddyheppell.cavegame.items.ItemRegistry;
 import com.freddyheppell.cavegame.items.SwordItem;
-import com.freddyheppell.cavegame.save.SaveManager;
 import com.freddyheppell.cavegame.utility.Console;
-import com.freddyheppell.cavegame.world.Region;
 import com.freddyheppell.cavegame.world.World;
 import com.freddyheppell.cavegame.world.cells.Cell;
-import com.freddyheppell.cavegame.world.coord.Transform;
+import com.freddyheppell.cavegame.world.coord.Vector2;
 import com.freddyheppell.cavegame.world.coord.WorldCoordinate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,15 +20,32 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Represents a player in the game
+ */
 public class Player extends Entity {
     private ArrayList<Item> inventory = new ArrayList<>();
 
-    // The indexes of the equipped weapon and armor
+    /**
+     * The index of the equipped weapon
+     */
     private int iEquippedWeapon;
+
+    /**
+     * The index of the equipped armour
+     */
     private int iEquippedArmour;
 
+    /**
+     * The location of the player
+     */
     private WorldCoordinate location;
+
+    /**
+     * The number of moves the player has made since the last autosave
+     */
     private transient int moveCounter = 0;
+
     private static final Logger logger = LogManager.getLogger();
 
     public Player(WorldCoordinate location) {
@@ -59,8 +74,11 @@ public class Player extends Entity {
      */
     @Override
     public List<WorldCoordinate> getVisibleCells() {
+        // Get the dimensions of the user's console
         int h = Console.getWidth();
         int v = Console.getHeight();
+
+        // Calculate the coordinates of the four corners of the display
         int leftmostX = location.wx - h;
         int rightmostX = location.wx + h;
         int topmostY = location.wy + v;
@@ -70,14 +88,19 @@ public class Player extends Entity {
 
         for (int y = topmostY; y >= bottommostY; y--) {
             for (int x = leftmostX; x <= rightmostX; x++) {
-                WorldCoordinate worldCoordinate = new WorldCoordinate(x, y);
-                validCoords.add(worldCoordinate);
+                // Add all the coordinates within this range
+                validCoords.add(new WorldCoordinate(x, y));
             }
         }
 
         return validCoords;
     }
 
+    /**
+     * Show the interactive inventory menu
+     *
+     * @throws IOException if an exception is encountered getting user input
+     */
     public void showInventory() throws IOException {
         boolean showInv = true;
 
@@ -115,6 +138,7 @@ public class Player extends Entity {
                 inputString = inputString.toLowerCase();
 
                 if (inputString.charAt(0) == 'x') {
+                    // The player wants to exit
                     validString = true;
                     showInv = false;
                 } else if (inputString.charAt(0) == 'e' && inputString.length() != 1) {
@@ -223,8 +247,7 @@ public class Player extends Entity {
      * @param newCoordinate The player's new location
      * @param world         The world the player is in
      */
-    @Override
-    public void afterMove(WorldCoordinate newCoordinate, World world) {
+    private void afterMove(WorldCoordinate newCoordinate, World world) {
         logger.debug("Running afterMove event for " + newCoordinate);
         if (world.getCell(newCoordinate).listener != null) {
             logger.debug("Coordinate " + newCoordinate + " has an event");
@@ -270,13 +293,13 @@ public class Player extends Entity {
     }
 
     /**
-     * Move the entity by a transform
+     * Move the entity by a vector
      *
-     * @param transform the `Transform` to move the entity by
-     * @param world     The world instance to verify that the transform leads to a valid cell
+     * @param vector the `Vector2` to move the entity by
+     * @param world     The world instance to verify that the vector leads to a valid cell
      */
-    public void move(Transform transform, World world) {
-        WorldCoordinate newCoordinate = location.addTransform(transform);
+    public void move(Vector2 vector, World world) {
+        WorldCoordinate newCoordinate = location.addVector(vector);
         Cell targetCell = world.getCell(newCoordinate);
 
         if (targetCell.isBlocking()) {
@@ -331,12 +354,12 @@ public class Player extends Entity {
 
     }
 
-    public ArmourItem getEquippedArmour() {
+    private ArmourItem getEquippedArmour() {
         // Cast the item to its polymorphic type
         return (ArmourItem) inventory.get(iEquippedArmour);
     }
 
-    public SwordItem getEquippedWeapon() {
+    private SwordItem getEquippedWeapon() {
         // Cast the item to its polymorphic type
         return (SwordItem) inventory.get(iEquippedWeapon);
     }

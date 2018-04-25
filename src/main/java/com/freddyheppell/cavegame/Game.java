@@ -20,8 +20,9 @@ import java.util.Map;
 
 public class Game {
     public World world;
+
     private Player player;
-    private SeedManager seedManager;
+
     private String gameName;
 
     private static final Logger logger = LogManager.getLogger();
@@ -37,7 +38,7 @@ public class Game {
      *
      * @throws IOException when a filesystem exception is encountered
      */
-    public void mainMenu() throws IOException {
+    private void mainMenu() throws IOException {
         Console.clearScreen();
         System.out.println("CaveGame");
 
@@ -64,10 +65,11 @@ public class Game {
         // This will be null if the world doesn't have a JSON file, possibly because the world was just created
         Map<String, String> configMap = SaveManager.loadWorld(saveDir);
 
+        SeedManager seedManager;
         if (configMap != null) {
             // This world has previously been created
             // Retrieve the seed
-            this.seedManager = new SeedManager(Config.getString(configMap.get("worldSeed")));
+            seedManager = new SeedManager(Config.getString(configMap.get("worldSeed")));
 
             // Check if the configuration matches
             // If the hash doesn't match, alert the user
@@ -83,13 +85,13 @@ public class Game {
             System.out.println("Enter the world seed");
             System.out.print(">");
             String seedString = Console.readLine();
-            this.seedManager = new SeedManager(seedString);
+            seedManager = new SeedManager(seedString);
         }
 
         // Now create the world with that data
         // A new world is always created because the only data that's persisted is the two parameters passed through
         // Everything else doesn't need to be saved
-        this.world = new World(this.seedManager, this.gameName);
+        this.world = new World(seedManager, this.gameName);
 
         // Now overwrite the world.json file with these parameters
         saveWorld();
@@ -157,7 +159,6 @@ public class Game {
      */
     public void registerEvent(WorldCoordinate triggerSource, WorldCoordinate triggerLocation) {
         logger.debug("Registering event in world at" + triggerLocation);
-        logger.debug(triggerLocation == null);
         // Set the listener of this cell to the entity
         world.getCell(triggerLocation).listener = triggerSource;
         world.getRegion(triggerLocation.getRegionCoordinate()).modified = true;

@@ -8,7 +8,7 @@ public class Item {
     private transient int dropWeight;
 
     /**
-     * The gold value of this item
+     * The quantity of this item
      */
     public int quantity;
 
