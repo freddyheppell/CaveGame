@@ -158,9 +158,14 @@ public class Console {
         int enteredInt = min - 1;
 
         while (enteredInt < min || enteredInt > max) {
+            System.out.print("> ");
             String character = readLine();
 
-            enteredInt = Integer.valueOf(character);
+            try {
+                enteredInt = Integer.valueOf(character);
+            } catch (NumberFormatException e) {
+                System.out.println("!! Not a valid integer !!");
+            }
         }
 
         return enteredInt;
@@ -178,7 +183,7 @@ public class Console {
             System.out.println((i + 1) + ". " + options[i]);
         }
         System.out.println();
-        System.out.print("Enter your choice: ");
+        System.out.println("Enter your choice: ");
 
         // Subtract one because the displayed list starts at 1 but the actual list starts at 0
         return getIntRange(1, options.length) - 1;
