@@ -105,7 +105,7 @@ public class CombatManager {
         // Subtract armour from the defending entity
         defender.removeArmour(usedArmour);
 
-        output.append(String.format("%s attacks %s for %f damage", attackerDesc, defenderDesc, damageDone));
+        output.append(String.format("%s attacks %s for %.2f damage", attackerDesc, defenderDesc, damageDone));
 
         if (usedArmour > 0) {
             // If armour was used note this
@@ -114,7 +114,7 @@ public class CombatManager {
 
         if (defender.getClass() == Player.class) {
             // If the player was attacked, show their new health
-            output.append(" Health: ").append(defender.getHealth());
+            output.append(" Health: ").append(String.format("%.2f", defender.getHealth()));
         }
 
         System.out.println(output);
