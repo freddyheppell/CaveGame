@@ -41,6 +41,14 @@ public class Game {
     private void mainMenu() throws IOException {
         Console.clearScreen();
         System.out.println("CaveGame");
+        System.out.print("\n");
+        System.out.println("Use w,a,s,d to move, i to open inventory, x to exit.");
+
+        if (Console.getOperatingSystem() != Console.OperatingSystem.WINDOWS) {
+            System.out.print("Press ENTER after each command.");
+        }
+
+        System.out.print("\n\n");
 
         int menuChoice = Console.menu(new String[]{"Load Game", "Create Game"});
 
@@ -111,6 +119,7 @@ public class Game {
         } else {
             // There is no player file, make one
             this.player = new Player(world.getSpawnLocation());
+//            this.player = new Player(new WorldCoordinate(Integer.MAX_VALUE-50, 0));
             // ... and save it
             SaveManager.savePlayer(saveDir, player);
         }
