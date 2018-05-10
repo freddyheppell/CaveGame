@@ -1,26 +1,28 @@
-version '1.0-SNAPSHOT'
-
 buildscript {
     repositories {
         maven {
             url "https://plugins.gradle.org/m2/"
         }
     }
-    dependencies {
-        classpath "com.github.jengelman.gradle.plugins:shadow:2.0.2"
-    }
+}
+
+plugins {
+    id "edu.sc.seis.launch4j" version "2.4.3"
+    id "com.github.johnrengelman.shadow" version "2.0.4"
+}
+
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+    jcenter()
 }
 
 apply plugin: 'java'
 apply plugin: 'application'
 apply plugin: "com.github.johnrengelman.shadow"
+apply plugin: 'edu.sc.seis.launch4j'
 
-
-sourceCompatibility = 1.8
-
-repositories {
-    mavenCentral()
-}
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
@@ -34,13 +36,15 @@ run{
 mainClassName = "com.freddyheppell.cavegame.CaveGame"
 
 sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 repositories {
     mavenCentral()
 }
 
 distTar.enabled = false
-
+shadowDistTar.enabled = false
+shadowDistZip.enabled = false
 
 dependencies {
     testCompile "org.spockframework:spock-core:1.1-groovy-2.4-rc-2"
@@ -50,4 +54,9 @@ dependencies {
     compile group: 'uk.com.robust-it', name: 'cloning', version: '1.9.9'
     compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.11.0'
     compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.11.0'
+}
+
+launch4j {
+    mainClassName = 'com.freddyheppell.cavegame.CaveGame'
+    headerType = 'console'
 }
